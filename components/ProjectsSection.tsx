@@ -2,12 +2,17 @@ import React from 'react';
 import { Project } from '../types';
 import ProjectCard from './ProjectCard';
 
+import imgBlackhole from '../assets/images/bg-blackhole-website-section.jpg';
+import imgWedding from '../assets/images/bg-wedding-site-section.webp';
+import imgTalentpool from '../assets/images/bg-talentpool-section.webp';
+import imgComingSoon from '../assets/images/bg-coming-soon-section.jpg';
+
 const projects: Project[] = [
   {
     id: 1,
     title: 'A Black holes website',
     description: 'An interactive educational platform that explains the physics of black holes through theory, equations, visuals, and engaging tools designed for students and researchers.',
-    imageUrl: '../assets/bg-blackhole-website-section.jpg',
+    imageUrl: imgBlackhole,
     tags: ['Html', 'Css', 'JavaScript'],
     liveUrl: 'https://paristat.github.io/thesis/',
     sourceUrl: 'https://github.com/ParisTat/thesis',
@@ -16,7 +21,7 @@ const projects: Project[] = [
     id: 2,
     title: 'A wedding website',
     description: 'A wedding site that encorporates the invitation confirmation system, as well as all the required information a guest would need to attend the wedding.',
-    imageUrl: '../assets/bg-wedding-site-section.webp',
+    imageUrl: imgWedding,
     tags: ['React', 'TypeScript','Next.js', 'Firebase', 'Tailwind CSS'],
     liveUrl: 'https://wedding-site-d3677.web.app/',
     //sourceUrl: '#',
@@ -25,7 +30,7 @@ const projects: Project[] = [
     id: 3,
     title: 'In house hiring app',
     description: 'An application that allows for the hiring of employees for the company, as well as the management of the employees.',
-    imageUrl: '../assets/bg-talentpool-section.webp',
+    imageUrl: imgTalentpool,
     tags: ['React', 'TypeScript', 'Next.js','Supabase', 'Tailwind CSS'],
     //liveUrl: '#',
   },
@@ -33,7 +38,7 @@ const projects: Project[] = [
     id: 4,
     title: 'Future Projects',
     description: 'Nobody knows what the future holds, but I\'m sure it will be exciting.',
-    imageUrl: '../assets/bg-coming-soon-section.jpg',
+    imageUrl: imgComingSoon,
     tags: ['The', 'Future', 'Awaits!'],
     //sourceUrl: '#',
   },

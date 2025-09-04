@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import portrait from '../assets/images/NanoBananaProfilePic.jpeg';
 
 const dynamicWords = ["Experiences", "Solutions", "Web Apps"];
 
@@ -57,7 +58,7 @@ const Hero: React.FC = () => {
           <div className="absolute -inset-1.5 bg-gradient-to-r from-sky-500 to-teal-400 opacity-75 blur group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse hexagon"></div>
           <div className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden shadow-2xl shadow-sky-500/20 bg-slate-900 hexagon">
               <img 
-                src="../assets/NanoBananaProfilePic.jpeg" 
+                src={portrait} 
                 alt="Developer Portrait" 
                 className="w-full h-full object-cover"
               />
