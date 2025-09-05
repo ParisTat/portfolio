@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import portrait from '../assets/images/NanoBananaProfilePic.jpeg';
+import portrait from '../assets/images/Ghibli studio style portrait.jpeg';
+import resume from '../assets/documents/CV_Tataridis_Paris_Rafail_postGrad.pdf';
 
 const dynamicWords = ["Experiences", "Solutions", "Web Apps"];
 
@@ -50,6 +51,9 @@ const Hero: React.FC = () => {
           </a>
           <a href="#contact" className="bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1">
             Get In Touch
+          </a>
+          <a href="#resume" download className="bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-500 transition-all duration-300 transform hover:-translate-y-1">
+            Download CV
           </a>
         </div>
       </div>
