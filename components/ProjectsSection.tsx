@@ -32,7 +32,7 @@ const projects: Project[] = [
     description: 'An application that allows for the hiring of employees for the company, as well as the management of the employees.',
     imageUrl: imgTalentpool,
     tags: ['React', 'TypeScript', 'Next.js','Supabase', 'Tailwind CSS'],
-    //liveUrl: '#',
+    liveUrl: 'https://talent-pool-hirring-app.vercel.app/',
   },
   {
     id: 4,
