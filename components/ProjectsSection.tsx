@@ -33,6 +33,7 @@ const projects: Project[] = [
     imageUrl: imgTalentpool,
     tags: ['React', 'TypeScript', 'Next.js','Supabase', 'Tailwind CSS'],
     liveUrl: 'https://talent-pool-hirring-app.vercel.app/',
+    sourceUrl: 'https://github.com/ParisTat/TalentPool-HirringApp',
   },
   {
     id: 4,
