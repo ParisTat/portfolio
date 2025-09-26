@@ -29,7 +29,7 @@ const ContactSection: React.FC = () => {
 
     formData.append('access_key', ACCESS_KEY);
     formData.append('subject', 'Website Contact Request');
-    formData.append('from_name', 'Portfolio Website');
+    formData.append('from_name', 'portfolio Website');
     formData.append('replyto', String(formData.get('email') || ''));
     formData.append('email_to', 'paris.tataridis@gmail.com');
     formData.append('botcheck', ''); // honeypot
@@ -61,7 +61,7 @@ const ContactSection: React.FC = () => {
 
       <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 md:p-8 shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <input type="hidden" name="from_name" value="Portfolio Website" />
+          <input type="hidden" name="from_name" value="portfolio Website" />
           <input type="hidden" name="subject" value="Website Contact Request" />
           <input type="hidden" name="email_to" value="paris.tataridis@gmail.com" />
           <input type="hidden" name="botcheck" />

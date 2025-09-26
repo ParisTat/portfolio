@@ -145,4 +145,4 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ---
 
-Built with ❤️ by [Your Name]
+Built with ❤️ by Paris-Rafail Tataridis
