@@ -7,4 +7,5 @@ export interface Project {
   tags: string[];
   liveUrl?: string;
   sourceUrl?: string;
+  apkUrl?: string;
 }

@@ -34,6 +34,7 @@ const projects: Project[] = [
     tags: ['React', 'TypeScript', 'Next.js','Supabase', 'Tailwind CSS'],
     liveUrl: 'https://talent-pool-hirring-app.vercel.app/',
     sourceUrl: 'https://github.com/ParisTat/TalentPool-HirringApp',
+    apkUrl: 'https://github.com/ParisTat/TalentPool-HirringApp'
   },
   {
     id: 4,
