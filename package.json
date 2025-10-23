@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update-cv": "node scripts/updateCVList.js"
   },
   "dependencies": {
     "react-dom": "^19.1.1",
