@@ -2,10 +2,10 @@ import React from 'react';
 import { Project } from '../types';
 import ProjectCard from './ProjectCard';
 
-import imgBlackhole from '../assets/images/bg-blackhole-website-section.jpg';
+import imgBlackhole from '../assets/images/bg-blackhole-website-section.webp';
 import imgWedding from '../assets/images/bg-wedding-site-section.webp';
 import imgTalentpool from '../assets/images/bg-talentpool-section.webp';
-import imgComingSoon from '../assets/images/bg-coming-soon-section.jpg';
+import imgComingSoon from '../assets/images/bg-coming-soon-section.webp';
 
 const projects: Project[] = [
   {

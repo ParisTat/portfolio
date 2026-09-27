@@ -41,7 +41,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div className="bg-slate-800/50 rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/10 hover:-translate-y-2 border border-slate-700/50 backdrop-blur-sm">
       <div className="relative overflow-hidden">
-        <img src={imageUrl} alt={title} className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img
+          src={imageUrl}
+          alt={title}
+          width={800}
+          height={256}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+        />
         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300"></div>
       </div>
       <div className="p-6">

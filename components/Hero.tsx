@@ -63,9 +63,14 @@ const Hero: React.FC = () => {
         <div className="relative group">
           <div className="absolute -inset-1.5 bg-gradient-to-r from-sky-500 to-teal-400 opacity-75 blur group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse hexagon"></div>
           <div className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden shadow-2xl shadow-sky-500/20 bg-slate-900 hexagon">
-              <img 
-                src={portrait} 
-                alt="Developer Portrait" 
+              <img
+                src={portrait}
+                alt="Developer Portrait"
+                width={1184}
+                height={864}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-cover"
               />
           </div>
