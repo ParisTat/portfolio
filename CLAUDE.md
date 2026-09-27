@@ -38,8 +38,7 @@ App.tsx, index.tsx, index.html   # entry
 components/                      # page sections (Hero, ProjectsSection, ProjectCard, ContactSection, Footer, ...)
 config/                          # project/CV data
 hooks/, utils/                   # shared logic
-assets/                          # images, favicons, CV
-scripts/updateCVList.js          # npm run update-cv
+assets/                          # images, favicons; CV is always assets/documents/cv.pdf
 .github/workflows/deploy.yml     # build + deploy to Pages on push to main
 ```
 
@@ -53,7 +52,7 @@ VITE_WEB3FORMS_ACCESS_KEY=   # public by design; lock to the domain in the Web3F
 ## Available Commands
 
 - `npm run dev` / `npm run build` / `npm run preview`
-- `npm run update-cv` to regenerate the CV list
+- Update the CV: overwrite `assets/documents/cv.pdf` and commit (`docs: update CV`); the download name lives in `config/cvConfig.ts`
 - `/ecc:plan`, `/ecc:react-test`, `/ecc:react-review`, `/ecc:build-fix`
 
 ## Git Workflow
