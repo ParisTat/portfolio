@@ -198,7 +198,7 @@ const ContactSection: React.FC = () => {
                 onChange={handleFieldChange('name')}
                 aria-invalid={fieldErrors.name ? true : undefined}
                 aria-describedby={fieldErrors.name ? nameErrorId : undefined}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
                 placeholder="Your name"
               />
               {fieldErrors.name && (
@@ -221,7 +221,7 @@ const ContactSection: React.FC = () => {
                 onChange={handleFieldChange('email')}
                 aria-invalid={fieldErrors.email ? true : undefined}
                 aria-describedby={fieldErrors.email ? emailErrorId : undefined}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
                 placeholder="you@example.com"
               />
               {fieldErrors.email && (
@@ -248,7 +248,7 @@ const ContactSection: React.FC = () => {
               onChange={handleFieldChange('message')}
               aria-invalid={fieldErrors.message ? true : undefined}
               aria-describedby={fieldErrors.message ? messageErrorId : undefined}
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500"
               placeholder="How can I help?"
             />
             {fieldErrors.message && (
