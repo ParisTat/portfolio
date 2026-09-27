@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "update-cv": "node scripts/updateCVList.js",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",

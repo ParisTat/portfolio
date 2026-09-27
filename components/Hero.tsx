@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import portrait from '../assets/images/Ghibli studio style portrait.jpeg';
-import { useCV } from '../hooks/useCV';
+// Vite bundles the PDF and returns its URL with the deploy base (/portfolio/).
+import cvUrl from '../assets/documents/cv.pdf?url';
+import { cvConfig } from '../config/cvConfig';
 
 const dynamicWords = ["Experiences", "Solutions", "Web Apps"];
 
@@ -8,7 +10,6 @@ const Hero: React.FC = () => {
   const [wordIndex, setWordIndex] = useState(0);
   const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const { cvUrl, loading: cvLoading, error: cvError, displayName, buttonText, buttonClass } = useCV();
 
   useEffect(() => {
     const handleTyping = () => {
@@ -53,13 +54,8 @@ const Hero: React.FC = () => {
           <a href="#contact" className="bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1">
             Get In Touch
           </a>
-          <a 
-            href={cvUrl} 
-            download={displayName} 
-            className={`${buttonClass} ${cvLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            title={cvError ? `Error: ${cvError}` : ''}
-          >
-            {cvLoading ? 'Loading...' : buttonText}
+          <a href={cvUrl} download={cvConfig.downloadName} className={cvConfig.buttonClass}>
+            {cvConfig.buttonText}
           </a>
         </div>
       </div>

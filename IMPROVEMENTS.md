@@ -3,7 +3,7 @@
 Status as of 2026-09-27. **P0** = do next, **P1** = soon, **P2** = nice to have.
 Security items are judged against the ECC security rules (`../.claude/rules/ecc/{common,typescript,react,web}/security.md`).
 
-## Done on `fix/security-hardening` (uncommitted)
+## Done (PR #1 `fix/security-hardening`, merged 2026-09-27)
 
 Security
 - [x] Removed `GEMINI_API_KEY` injection from `vite.config.ts`. It was dead code, but any key set in `.env.local` would have shipped in the public bundle.
@@ -17,7 +17,11 @@ Quality gaps from `/ecc:agent-sort`
 - [x] Vitest + Testing Library + jsdom. Scripts: `test`, `test:watch`, `coverage`, `lint`, `typecheck`.
 - [x] `build` now runs `tsc --noEmit` first.
 - [x] CI (`deploy.yml`) runs lint and test before building, so a failing test blocks the deploy.
-- [x] **Bug fixed (test-first):** the `useCV` fallback read stale state and never fired. It's now covered by `hooks/useCV.test.ts`.
+- [x] **Bug fixed (test-first):** the `useCV` fallback read stale state and never fired.
+
+On `fix/cv-download`
+- [x] **CV download was broken in production**: the PDF wasn't in the build (it lived outside `public/`) and the URL ignored the `/portfolio/` base, so the button saved GitHub's 404 page as a `.pdf`. Now `assets/documents/cv.pdf` is imported via Vite (`?url`), saved as `Paris_Rafail_Tataridis_CV.pdf`. The runtime HEAD probing, `cvDetector.ts`, `useCV` and the `update-cv` script are gone. Covered by `components/Hero.test.tsx`.
+- [x] Removed the dead `<link href="/index.css">` (404 in production).
 
 ## Security
 
@@ -43,10 +47,8 @@ Quality gaps from `/ecc:agent-sort`
 
 | Pri | Item | Notes |
 |-----|------|-------|
-| P0 | **Verify the CV download works on GitHub Pages.** `utils/cvDetector.ts` probes `/assets/documents/...`, but the site lives under `/portfolio/` | Likely 404s in production; use `import.meta.env.BASE_URL` or import the PDF via Vite |
 | P0 | Compress background images: `bg-blackhole-website-section.jpg` is **5.5 MB**, `bg-wedding-site-section.webp` 1.7 MB | AVIF/WebP ≤ 300 KB + `srcset`; biggest load-time win (ECC web performance rules) |
-| P1 | More tests: `ContactSection` (validation and error states), `useGitHubRelease`; one Playwright smoke test in CI | Workspace target is 80% coverage; currently only `useCV` is tested |
+| P1 | More tests: `ContactSection` (validation and error states), `useGitHubRelease`; one Playwright smoke test in CI | Workspace target is 80% coverage; currently only the Hero CV link is tested |
 | P1 | SEO: real `<title>`, meta description, Open Graph/Twitter tags, `sitemap.xml`, `robots.txt`, JSON-LD `Person` | Title is still "Developer Portfolio" |
 | P1 | a11y: contact-form `<label>`s aren't linked to inputs (`htmlFor`/`id`); check focus styles and contrast | |
 | P2 | Prettier + a format check in CI | ESLint is in; formatting isn't enforced yet |
-| P2 | `KNOWN_CV_FILES` in `cvDetector.ts` is a mutable exported array with an unused `addCVFile` mutator | Make it `readonly` and remove the mutator (immutability rule) |
