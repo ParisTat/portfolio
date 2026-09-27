@@ -201,14 +201,55 @@ describe('ContactSection', () => {
     const mailLink = screen.getByRole('link', { name: /email me directly/i });
     expect(mailLink.getAttribute('href')).not.toMatch(/@/);
 
+    // jsdom has no real navigation implementation; letting a real click
+    // reach the mailto: anchor's default action (or a real assignment to
+    // window.location.href) logs a noisy "Not implemented: navigation"
+    // error even though the click handler itself preventDefaults and
+    // drives navigation manually. jsdom's Location.href accessor itself
+    // isn't reconfigurable, so swap out the whole window.location object
+    // for a plain stub the assertion below can read back safely.
+    const originalLocation = window.location;
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { ...originalLocation, href: '' },
+    });
+
     const user = userEvent.setup();
     await user.click(mailLink);
+
     expect(mailLink.getAttribute('href')).toMatch(/^mailto:.+@.+/);
+    expect(window.location.href).toMatch(/^mailto:.+@.+/);
+
+    Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
 
     expect(screen.queryByRole('textbox', { name: /leave this field empty/i })).not.toBeInTheDocument();
     const honeypot = container.querySelector('input[name="botcheck"]');
     expect(honeypot).toHaveAttribute('tabindex', '-1');
     expect(honeypot).toHaveAttribute('autocomplete', 'off');
+  });
+
+  it('reveals the mailto href on focus and activates it via the keyboard (Enter)', async () => {
+    const ContactSection = await loadContactSection();
+    render(<ContactSection />);
+
+    const originalLocation = window.location;
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: { ...originalLocation, href: '' },
+    });
+
+    const mailLink = screen.getByRole('link', { name: /email me directly/i });
+    mailLink.focus();
+    expect(document.activeElement).toBe(mailLink);
+    expect(mailLink.getAttribute('href')).toMatch(/^mailto:.+@.+/);
+
+    const user = userEvent.setup();
+    await user.keyboard('{Enter}');
+    expect(window.location.href).toMatch(/^mailto:.+@.+/);
+
+    Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
   });
 
   it('sets aria-busy on the form while submitting', async () => {

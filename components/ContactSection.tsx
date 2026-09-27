@@ -108,8 +108,25 @@ const ContactSection: React.FC = () => {
       setValues((prev) => ({ ...prev, [field]: value }));
     };
 
-  const handleMailtoInteraction = (e: React.SyntheticEvent<HTMLAnchorElement>) => {
+  // Reveal the real mailto: href on focus so keyboard users and screen readers
+  // can preview the destination before activating the link (the address is
+  // kept out of the static markup until then - see the comment above the
+  // CONTACT_EMAIL_* constants).
+  const handleMailtoFocus = (e: React.FocusEvent<HTMLAnchorElement>) => {
     e.currentTarget.href = buildMailtoHref();
+  };
+
+  // Build the href ourselves and navigate via window.location instead of
+  // letting the browser follow the anchor's default action: jsdom has no
+  // implementation for that default navigation and logs noisy "Not
+  // implemented" errors in tests, and driving it explicitly means mouse
+  // clicks and keyboard (Enter) activation both go through the same,
+  // easily-testable code path.
+  const handleMailtoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = buildMailtoHref();
+    e.currentTarget.href = href;
+    window.location.href = href;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -121,14 +138,14 @@ const ContactSection: React.FC = () => {
       return;
     }
 
-    setStatus('submitting');
-    setErrorMsg('');
-
     if (!UUID_RE.test(ACCESS_KEY)) {
       setStatus('error');
       setErrorMsg(GENERIC_SUBMIT_ERROR);
       return;
     }
+
+    setStatus('submitting');
+    setErrorMsg('');
 
     const formData = new FormData();
     formData.append('name', values.name.trim());
@@ -283,8 +300,8 @@ const ContactSection: React.FC = () => {
             <a
               className="text-sky-400 hover:underline"
               href="#"
-              onClick={handleMailtoInteraction}
-              onFocus={handleMailtoInteraction}
+              onClick={handleMailtoClick}
+              onFocus={handleMailtoFocus}
             >
               email me directly
             </a>
