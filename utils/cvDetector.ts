@@ -32,7 +32,7 @@ export const getMostRecentCV = async (): Promise<CVFile | null> => {
           lastModified: new Date() // We can't get actual file date in browser, so use current time
         };
       }
-    } catch (err) {
+    } catch {
       // File doesn't exist, try next one
       continue;
     }
@@ -65,7 +65,7 @@ export const getAllCVFiles = async (): Promise<CVFile[]> => {
           lastModified: new Date()
         });
       }
-    } catch (err) {
+    } catch {
       // File doesn't exist, skip it
       continue;
     }

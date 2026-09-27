@@ -1,14 +1,11 @@
 import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+// Only VITE_-prefixed env vars reach the client bundle. Never inject other
+// secrets here via `define` — everything in the bundle is public.
+export default defineConfig(() => {
     return {
       base: '/portfolio/', // <-- set to your repo name
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

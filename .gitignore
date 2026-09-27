@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Env files: never commit (only the .example template)
+.env
+.env.*
+!.env.example

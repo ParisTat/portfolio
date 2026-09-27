@@ -29,7 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       }
       
       // Fallback to direct download URL
-      const match = apkUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+      const match = apkUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
       if (match) {
         const [, owner, repo] = match;
         return `https://github.com/${owner}/${repo}/releases/latest/download/app-debug.apk`;
