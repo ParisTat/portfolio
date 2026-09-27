@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProjectsSection from './components/ProjectsSection';
+import GitHubActivity from './components/github-activity/GitHubActivity';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 
@@ -12,6 +13,7 @@ const App: React.FC = () => {
       <main>
         <Hero />
         <ProjectsSection />
+        <GitHubActivity />
         <ContactSection />
       </main>
       <Footer />

@@ -104,8 +104,8 @@ const Header: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="#projects" 
+                  <a
+                    href="#projects"
                     className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
@@ -116,8 +116,20 @@ const Header: React.FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="#contact" 
+                  <a
+                    href="#activity"
+                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavClick('#activity');
+                    }}
+                  >
+                    Activity
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#contact"
                     className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
