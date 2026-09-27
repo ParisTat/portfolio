@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { isGithubHttpsUrl, parseGithubRepoUrl } from '../utils/githubUrl';
 
 interface GitHubReleaseAsset {
   name: string;
@@ -17,15 +18,6 @@ function isAbortError(err: unknown): boolean {
     'name' in err &&
     (err as { name?: unknown }).name === 'AbortError'
   );
-}
-
-function isGithubHttpsUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'https:' && (url.hostname === 'github.com' || url.hostname.endsWith('.github.com'));
-  } catch {
-    return false;
-  }
 }
 
 function isValidAsset(asset: unknown): asset is GitHubReleaseAsset {
@@ -68,14 +60,14 @@ export const useGitHubRelease = (repoUrl: string) => {
       }
 
       // Extract owner and repo from GitHub URL
-      const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      if (!match) {
+      const repoRef = parseGithubRepoUrl(repoUrl);
+      if (!repoRef) {
         setError('Invalid GitHub repository URL');
         setLoading(false);
         return;
       }
 
-      const [, owner, repo] = match;
+      const { owner, repo } = repoRef;
       setLoading(true);
       try {
         const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, {

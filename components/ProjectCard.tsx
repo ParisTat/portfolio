@@ -3,6 +3,7 @@ import { Project } from '../types';
 import ExternalLinkIcon from './icons/ExternalLinkIcon';
 import GitHubIcon from './icons/GitHubIcon';
 import { useGitHubRelease } from '../hooks/useGitHubRelease';
+import { parseGithubRepoUrl } from '../utils/githubUrl';
 
 interface ProjectCardProps {
   project: Project;
@@ -10,30 +11,28 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const { title, description, imageUrl, tags, liveUrl, sourceUrl, apkUrl } = project;
-  
+
   // Use the GitHub release hook to get the latest release data
   const { release, loading, error } = useGitHubRelease(apkUrl || '');
 
   // Function to get APK download URL from GitHub release
   const getApkDownloadUrl = () => {
-    if (apkUrl && apkUrl.includes('github.com')) {
+    const repoRef = apkUrl ? parseGithubRepoUrl(apkUrl) : null;
+    if (repoRef) {
       // If we have release data, find the APK file
       if (release && release.assets) {
-        const apkAsset = release.assets.find(asset => 
-          asset.name.toLowerCase().includes('.apk') || 
+        const apkAsset = release.assets.find(asset =>
+          asset.name.toLowerCase().includes('.apk') ||
           asset.name.toLowerCase().includes('app-debug')
         );
         if (apkAsset) {
           return apkAsset.browser_download_url;
         }
       }
-      
+
       // Fallback to direct download URL
-      const match = apkUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      if (match) {
-        const [, owner, repo] = match;
-        return `https://github.com/${owner}/${repo}/releases/latest/download/app-debug.apk`;
-      }
+      const { owner, repo } = repoRef;
+      return `https://github.com/${owner}/${repo}/releases/latest/download/app-debug.apk`;
     }
     return apkUrl;
   };
