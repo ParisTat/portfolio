@@ -18,7 +18,7 @@ export const useGitHubRelease = (repoUrl: string) => {
       try {
         setLoading(true);
         // Extract owner and repo from GitHub URL
-        const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+        const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
         if (!match) {
           throw new Error('Invalid GitHub repository URL');
         }

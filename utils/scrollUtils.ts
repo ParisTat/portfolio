@@ -8,13 +8,13 @@
  * @param limit Time limit in milliseconds
  * @returns Throttled function
  */
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: never[]) => unknown>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
-  return function (this: any, ...args: Parameters<T>) {
+
+  return function (this: unknown, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
@@ -29,13 +29,13 @@ export const throttle = <T extends (...args: any[]) => any>(
  * @param delay Delay in milliseconds
  * @returns Debounced function
  */
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: never[]) => unknown>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
-  let timeoutId: NodeJS.Timeout;
-  
-  return function (this: any, ...args: Parameters<T>) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return function (this: unknown, ...args: Parameters<T>) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func.apply(this, args), delay);
   };
