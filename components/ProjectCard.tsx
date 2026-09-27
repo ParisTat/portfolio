@@ -39,7 +39,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   };
 
   return (
-    <div className="bg-slate-800/50 rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/10 hover:-translate-y-2 border border-slate-700/50 backdrop-blur-sm">
+    <div className="bg-slate-800/50 rounded-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:shadow-sky-500/10 hover:-translate-y-2 border border-slate-700/50 backdrop-blur-xs">
       <div className="relative overflow-hidden">
         <img
           src={imageUrl}

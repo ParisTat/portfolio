@@ -19,9 +19,15 @@ describe('buildContentSecurityPolicy', () => {
     expect(scriptSrc).not.toContain('unsafe-eval');
   });
 
-  test('allows Google Fonts for styles and fonts only', () => {
-    expect(csp).toContain('style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com');
+  test('allows Google Fonts for styles and fonts only, with no inline styles', () => {
+    expect(csp).toContain("style-src 'self' https://fonts.googleapis.com");
+    expect(csp).not.toContain('unsafe-inline');
     expect(csp).toContain("font-src 'self' https://fonts.gstatic.com");
+  });
+
+  test('restricts images to same-origin and data URIs', () => {
+    expect(csp).toContain("img-src 'self' data:");
+    expect(csp).not.toMatch(/img-src[^;]*https:/);
   });
 
   test('allows the contact form and GitHub release APIs via connect-src', () => {

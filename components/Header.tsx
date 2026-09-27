@@ -135,7 +135,7 @@ const Header: React.FC = () => {
         {/* Mobile Menu Backdrop */}
         {isMobileMenuOpen && (
           <div 
-            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-40"
             onClick={closeMobileMenu}
           />
         )}

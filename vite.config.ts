@@ -6,13 +6,16 @@ import tailwindcss from '@tailwindcss/vite';
 // so the CSP has to ship as a <meta http-equiv> tag instead. Keeping the
 // directive list as a plain exported function (rather than inline in the
 // plugin) lets it be unit-tested without spinning up a Vite build.
+// Browsers ignore frame-ancestors, sandbox and report-uri in a <meta> CSP, so
+// clickjacking protection is not possible on GitHub Pages.
 export function buildContentSecurityPolicy(): string {
   const directives = [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    // No 'unsafe-inline': React applies `style` props through the CSSOM, which CSP allows.
+    "style-src 'self' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https:",
+    "img-src 'self' data:",
     "connect-src 'self' https://api.web3forms.com https://api.github.com",
     "object-src 'none'",
     "base-uri 'self'",
