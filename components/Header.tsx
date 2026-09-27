@@ -59,7 +59,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Burger Menu Button */}
         <button
-          className="md:hidden z-60 w-8 h-8 flex flex-col justify-center items-center space-y-1 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-50 rounded"
+          className="md:hidden z-60 w-8 h-8 flex flex-col justify-center items-center space-y-1 focus:outline-hidden focus:ring-2 focus:ring-sky-400/50 rounded-sm"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
           aria-expanded={isMobileMenuOpen}

@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+
+  --animate-cursor-blink: cursor-blink 1.2s infinite;
+
+  @keyframes cursor-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+}
+
+/* Tailwind v4 defaults buttons to `cursor: default`; restore the v3 behavior
+   (pointer cursor) so buttons keep looking clickable. */
+@layer base {
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.animated-grid {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(30, 64, 175, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 64, 175, 0.15) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  animation: grid-scroll 30s linear infinite;
+  z-index: 0;
+}
+
+@keyframes grid-scroll {
+  from {
+    transform: translateY(-2rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+main,
+header,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+.hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
