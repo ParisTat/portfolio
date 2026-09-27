@@ -38,6 +38,11 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run fetch:stats
+        env:
+          # Scoped to this step only, so npm install scripts and the build never see it.
+          # If the built-in token lacks contributionsCollection access, add a fine-grained
+          # read-only PAT as the STATS_TOKEN repo secret; it is preferred automatically.
+          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
       - run: npm run build
       - name: SPA fallback
         run: cp dist/index.html dist/404.html
