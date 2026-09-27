@@ -80,6 +80,18 @@ describe('parseGitHubStats', () => {
     expect(result?.languages).toEqual([{ name: 'Valid', color: '#abcabc', percent: 90 }]);
   });
 
+  it('drops a language whose percent is above 100', () => {
+    const payload = {
+      ...validPayload(),
+      languages: [
+        { name: 'Huge', color: '#3178c6', percent: 5000 },
+        { name: 'Valid', color: '#abcabc', percent: 100 },
+      ],
+    };
+    const result = parseGitHubStats(payload);
+    expect(result?.languages).toEqual([{ name: 'Valid', color: '#abcabc', percent: 100 }]);
+  });
+
   it('caps oversized weeks and days-per-week arrays', () => {
     const oversizedWeeks = Array.from({ length: 100 }, (_, weekIndex) =>
       Array.from({ length: 20 }, (_, dayIndex) => ({

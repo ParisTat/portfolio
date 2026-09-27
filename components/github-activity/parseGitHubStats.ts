@@ -14,6 +14,7 @@ const FALLBACK_COLOR = '#64748b';
 const MAX_WEEKS = 53;
 const MAX_DAYS_PER_WEEK = 7;
 const MAX_LANGUAGES = 7;
+const MAX_PERCENT = 100;
 
 function isFiniteNonNegative(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -41,7 +42,7 @@ function parseLanguageStat(value: unknown): LanguageStat | null {
   if (typeof value !== 'object' || value === null) return null;
   const lang = value as Record<string, unknown>;
   if (typeof lang.name !== 'string' || lang.name.length === 0) return null;
-  if (!isFiniteNonNegative(lang.percent)) return null;
+  if (!isFiniteNonNegative(lang.percent) || lang.percent > MAX_PERCENT) return null;
   const color =
     typeof lang.color === 'string' && COLOR_PATTERN.test(lang.color) ? lang.color : FALLBACK_COLOR;
   return { name: lang.name, color, percent: lang.percent };

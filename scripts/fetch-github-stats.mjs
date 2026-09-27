@@ -27,9 +27,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_PATH = path.resolve(__dirname, '../public/github-stats.json');
 
 const QUERY = `
-  query GitHubStats($login: String!, $reposCursor: String) {
+  query GitHubStats($login: String!, $reposCursor: String, $withCalendar: Boolean!) {
     user(login: $login) {
-      contributionsCollection {
+      contributionsCollection @include(if: $withCalendar) {
         contributionCalendar {
           totalContributions
           weeks {
@@ -89,7 +89,8 @@ async function queryGraphQl(cursor) {
     },
     body: JSON.stringify({
       query: QUERY,
-      variables: { login: GITHUB_LOGIN, reposCursor: cursor ?? null },
+      // The calendar is only needed once; later repo pages skip it to save GraphQL points.
+      variables: { login: GITHUB_LOGIN, reposCursor: cursor ?? null, withCalendar: cursor == null },
     }),
   });
 
@@ -110,6 +111,7 @@ async function queryGraphQl(cursor) {
 /**
  * Validates the shape of a single GraphQL page before it is used.
  * @param {unknown} data
+ * @param {boolean} [requireCalendar=true] only the first page carries the calendar
  * @returns {data is {
  *   user: {
  *     contributionsCollection: { contributionCalendar: { totalContributions: number, weeks: unknown[] } },
@@ -117,12 +119,14 @@ async function queryGraphQl(cursor) {
  *   }
  * }}
  */
-function isValidPage(data) {
+function isValidPage(data, requireCalendar = true) {
   const user = /** @type {any} */ (data)?.user;
   if (!user || typeof user !== 'object') return false;
 
   const calendar = user.contributionsCollection?.contributionCalendar;
-  if (!calendar || typeof calendar.totalContributions !== 'number' || !Array.isArray(calendar.weeks)) {
+  const hasCalendar =
+    calendar && typeof calendar.totalContributions === 'number' && Array.isArray(calendar.weeks);
+  if (requireCalendar && !hasCalendar) {
     return false;
   }
 
@@ -147,7 +151,7 @@ async function collectAllLanguageEdges(firstPageData) {
   let pageData = firstPageData;
   let pageCount = 0;
 
-  while (isValidPage(pageData) && pageCount < MAX_REPO_PAGES) {
+  while (isValidPage(pageData, pageCount === 0) && pageCount < MAX_REPO_PAGES) {
     const repositories = /** @type {any} */ (pageData).user.repositories;
 
     for (const repo of repositories.nodes) {

@@ -36,8 +36,14 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({ weeks, totalC
 
   const summaryLabel = `${totalContributions} contribution${totalContributions === 1 ? '' : 's'} in the last year`;
 
+  // The scroll container is focusable so keyboard users can scroll the grid on narrow screens (WCAG 2.1.1).
   return (
-    <div className="overflow-x-auto pb-2">
+    <div
+      role="region"
+      aria-label="Contribution calendar"
+      tabIndex={0}
+      className="overflow-x-auto pb-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+    >
       <div
         role="img"
         aria-label={summaryLabel}
