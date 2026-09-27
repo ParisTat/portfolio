@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://paristat.github.io/portfolio/sitemap.xml
