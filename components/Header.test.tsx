@@ -92,9 +92,8 @@ describe('Header', () => {
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
-    const backdrop = document.querySelector('.md\\:hidden.fixed.inset-0');
-    expect(backdrop).not.toBeNull();
-    fireEvent.click(backdrop as Element);
+    const backdrop = screen.getByTestId('mobile-menu-backdrop');
+    fireEvent.click(backdrop);
 
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
