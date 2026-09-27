@@ -194,20 +194,15 @@ describe('ContactSection', () => {
     expect(container.textContent).not.toMatch(/paris\.tataridis@gmail\.com/i);
   });
 
-  it('builds the mailto fallback link only on interaction, and keeps the honeypot out of the tab order', async () => {
+  it('navigates to the mailto fallback on click, and keeps the honeypot out of the tab order', async () => {
     const ContactSection = await loadContactSection();
     const { container } = render(<ContactSection />);
 
-    const mailLink = screen.getByRole('link', { name: /email me directly/i });
-    expect(mailLink.getAttribute('href')).not.toMatch(/@/);
-
-    // jsdom has no real navigation implementation; letting a real click
-    // reach the mailto: anchor's default action (or a real assignment to
-    // window.location.href) logs a noisy "Not implemented: navigation"
-    // error even though the click handler itself preventDefaults and
-    // drives navigation manually. jsdom's Location.href accessor itself
-    // isn't reconfigurable, so swap out the whole window.location object
-    // for a plain stub the assertion below can read back safely.
+    // jsdom has no real navigation implementation; a real assignment to
+    // window.location.href logs a noisy "Not implemented: navigation"
+    // error. jsdom's Location.href accessor itself isn't reconfigurable,
+    // so swap out the whole window.location object for a plain stub the
+    // assertion below can read back safely.
     const originalLocation = window.location;
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -215,10 +210,12 @@ describe('ContactSection', () => {
       value: { ...originalLocation, href: '' },
     });
 
-    const user = userEvent.setup();
-    await user.click(mailLink);
+    const mailButton = screen.getByRole('button', { name: /email me directly/i });
+    expect(window.location.href).toBe('');
 
-    expect(mailLink.getAttribute('href')).toMatch(/^mailto:.+@.+/);
+    const user = userEvent.setup();
+    await user.click(mailButton);
+
     expect(window.location.href).toMatch(/^mailto:.+@.+/);
 
     Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
@@ -229,7 +226,7 @@ describe('ContactSection', () => {
     expect(honeypot).toHaveAttribute('autocomplete', 'off');
   });
 
-  it('reveals the mailto href on focus and activates it via the keyboard (Enter)', async () => {
+  it('activates the mailto fallback via the keyboard (Enter)', async () => {
     const ContactSection = await loadContactSection();
     render(<ContactSection />);
 
@@ -240,10 +237,9 @@ describe('ContactSection', () => {
       value: { ...originalLocation, href: '' },
     });
 
-    const mailLink = screen.getByRole('link', { name: /email me directly/i });
-    mailLink.focus();
-    expect(document.activeElement).toBe(mailLink);
-    expect(mailLink.getAttribute('href')).toMatch(/^mailto:.+@.+/);
+    const mailButton = screen.getByRole('button', { name: /email me directly/i });
+    mailButton.focus();
+    expect(document.activeElement).toBe(mailButton);
 
     const user = userEvent.setup();
     await user.keyboard('{Enter}');

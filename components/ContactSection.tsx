@@ -108,25 +108,14 @@ const ContactSection: React.FC = () => {
       setValues((prev) => ({ ...prev, [field]: value }));
     };
 
-  // Reveal the real mailto: href on focus so keyboard users and screen readers
-  // can preview the destination before activating the link (the address is
-  // kept out of the static markup until then - see the comment above the
-  // CONTACT_EMAIL_* constants).
-  const handleMailtoFocus = (e: React.FocusEvent<HTMLAnchorElement>) => {
-    e.currentTarget.href = buildMailtoHref();
-  };
-
-  // Build the href ourselves and navigate via window.location instead of
-  // letting the browser follow the anchor's default action: jsdom has no
-  // implementation for that default navigation and logs noisy "Not
-  // implemented" errors in tests, and driving it explicitly means mouse
-  // clicks and keyboard (Enter) activation both go through the same,
-  // easily-testable code path.
-  const handleMailtoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const href = buildMailtoHref();
-    e.currentTarget.href = href;
-    window.location.href = href;
+  // This is a button, not a link: it never navigates via a real href (the
+  // address is kept out of the static markup - see the comment above the
+  // CONTACT_EMAIL_* constants), it drives navigation itself through
+  // window.location. Building the mailto: URL here and assigning it
+  // ourselves also means mouse clicks and keyboard (Enter/Space)
+  // activation both go through the same, easily-testable code path.
+  const handleMailtoClick = () => {
+    window.location.href = buildMailtoHref();
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -297,14 +286,9 @@ const ContactSection: React.FC = () => {
 
           <p className="text-xs text-slate-500">
             Tip: If the form doesn’t work, you can{' '}
-            <a
-              className="text-sky-400 hover:underline"
-              href="#"
-              onClick={handleMailtoClick}
-              onFocus={handleMailtoFocus}
-            >
+            <button type="button" className="text-sky-400 hover:underline cursor-pointer" onClick={handleMailtoClick}>
               email me directly
-            </a>
+            </button>
             .
           </p>
         </form>

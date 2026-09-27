@@ -26,8 +26,8 @@ const Header: React.FC = () => {
     >
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <a 
-          href="#" 
+        <a
+          href="#hero"
           className="text-2xl font-bold text-white tracking-wider hover:text-sky-400 transition-colors font-mono z-60"
           onClick={(e) => {
             e.preventDefault();
@@ -132,10 +132,13 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Backdrop */}
+        {/* Mobile Menu Backdrop: a decorative click-outside overlay only -
+            keyboard users already close the menu via Escape (handled in
+            useMobileMenu), so this stays out of the a11y tree. */}
         {isMobileMenuOpen && (
           <div
             data-testid="mobile-menu-backdrop"
+            aria-hidden="true"
             className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-40"
             onClick={closeMobileMenu}
           />
