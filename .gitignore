@@ -32,3 +32,6 @@ playwright-report
 .env
 .env.*
 !.env.example
+
+# Generated at build time by scripts/fetch-github-stats.mjs
+public/github-stats.json
