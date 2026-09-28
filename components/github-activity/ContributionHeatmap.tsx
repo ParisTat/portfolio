@@ -41,14 +41,14 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({ weeks, totalC
     <div
       role="region"
       aria-label="Contribution calendar"
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be focusable (axe: scrollable-region-focusable)
       tabIndex={0}
-      className="overflow-x-auto pb-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+      className="overflow-x-auto pb-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500"
     >
       <div
         role="img"
         aria-label={summaryLabel}
         className="inline-grid grid-flow-col gap-[3px]"
-        style={{ gridTemplateRows: 'repeat(7, 11px)' }}
       >
         {weeks.map((week, weekIndex) => (
           <div key={weekIndex} className="grid grid-flow-row gap-[3px]" style={{ gridTemplateRows: 'repeat(7, 11px)' }}>

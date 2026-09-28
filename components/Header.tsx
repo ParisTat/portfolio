@@ -91,54 +91,20 @@ const Header: React.FC = () => {
           <div className="pt-20 px-6">
             <nav>
               <ul className="space-y-6">
-                <li>
-                  <a 
-                    href="#hero" 
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#hero');
-                    }}
-                  >
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#projects"
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#projects');
-                    }}
-                  >
-                    Projects
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#activity"
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#activity');
-                    }}
-                  >
-                    Activity
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#contact"
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#contact');
-                    }}
-                  >
-                    Contact
-                  </a>
-                </li>
+                {navigationItems.map((item) => (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onNavClick(item.href);
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>

@@ -7,6 +7,30 @@ test.describe('Portfolio smoke test', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
+  test('loads without console errors or CSP violations', async ({ page }) => {
+    const consoleErrors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+    });
+    page.on('pageerror', (error) => consoleErrors.push(error.message));
+    await page.addInitScript(() => {
+      const violations: string[] = [];
+      (window as unknown as { __cspViolations: string[] }).__cspViolations = violations;
+      document.addEventListener('securitypolicyviolation', (event) => {
+        violations.push(`${event.violatedDirective} ${event.blockedURI}`);
+      });
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const cspViolations = await page.evaluate(
+      () => (window as unknown as { __cspViolations: string[] }).__cspViolations,
+    );
+    expect(cspViolations).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
+
   test('the CV download link points to a downloadable pdf', async ({ page }) => {
     await page.goto('/');
 
