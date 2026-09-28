@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
   return (
     <section id="hero" className="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center justify-between gap-12">
       <div className="md:w-3/5 text-center md:text-left">
-        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-4">
+        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight md:leading-none mb-4">
           Building Digital <br />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-teal-400 min-h-[6rem] md:min-h-[7rem] inline-block">
             {text || '\u00A0'}
