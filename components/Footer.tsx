@@ -4,7 +4,7 @@ import LinkedInIcon from './icons/LinkedInIcon';
 
 const Footer: React.FC = () => {
   return (
-    <footer id="contact" className="bg-slate-950 border-t border-slate-800">
+    <footer className="bg-slate-950 border-t border-slate-800">
       <div className="container mx-auto px-6 py-8 text-center text-slate-400">
         <div className="flex justify-center space-x-6 mb-4">
           <a href="https://github.com/ParisTat" className="hover:text-sky-400 transition-colors transform hover:scale-110" target="_blank" rel="noopener noreferrer">
