@@ -1,6 +1,6 @@
 # Portfolio: Improvements Backlog
 
-Status as of 2026-09-27. **P0** = do next, **P1** = soon, **P2** = nice to have.
+Status as of 2026-09-28. **P0** = do next, **P1** = soon, **P2** = nice to have.
 Security items are judged against the ECC security rules (`../.claude/rules/ecc/{common,typescript,react,web}/security.md`).
 
 ## Done (PR #1 `fix/security-hardening`, merged 2026-09-27)
@@ -23,22 +23,44 @@ On `fix/cv-download`
 - [x] **CV download was broken in production**: the PDF wasn't in the build (it lived outside `public/`) and the URL ignored the `/portfolio/` base, so the button saved GitHub's 404 page as a `.pdf`. Now `assets/documents/cv.pdf` is imported via Vite (`?url`), saved as `Paris_Rafail_Tataridis_CV.pdf`. The runtime HEAD probing, `cvDetector.ts`, `useCV` and the `update-cv` script are gone. Covered by `components/Hero.test.tsx`.
 - [x] Removed the dead `<link href="/index.css">` (404 in production).
 
+Stacked PRs (2026-09-28), merged in order
+1. `feat/build-tailwind-csp-seo`
+   - [x] Build-time Tailwind v4 (`@tailwindcss/vite`) replaces the runtime CDN script.
+   - [x] Strict CSP `<meta>` injected at build: no `'unsafe-inline'`, and only the Google Fonts, Web3Forms and GitHub API origins.
+   - [x] Images went from 7.7 MB to about 235 KB (WebP).
+   - [x] SEO: title, description, OG/Twitter tags, JSON-LD `Person`, `robots.txt`, `sitemap.xml`.
+2. `feat/contact-a11y-and-tests`
+   - [x] Contact form: linked labels, live regions, validation, honeypot, no plain email in the page.
+   - [x] `useGitHubRelease` hardened (abort on unmount, shape and URL validation).
+   - [x] `jsx-a11y` lint added.
+   - [x] 88 unit tests, with coverage thresholds.
+   - [x] Playwright smoke tests run in CI.
+3. `feat/github-activity`
+   - [x] Heatmap and top languages, built from `public/github-stats.json`. The JSON is fetched at build time with a token scoped to that one CI step, and a weekly rebuild keeps it fresh.
+   - [x] Actions pinned to SHAs.
+   - [x] Mobile nav now uses the shared nav items.
+   - [x] e2e test fails on console errors or CSP violations.
+
 ## Security
 
 | Pri | Item | Why |
 |-----|------|-----|
 | P0 | Turn on GitHub **secret scanning + push protection** (repo Settings → Code security) | Blocks accidental key pushes at the source |
-| P1 | Replace runtime `cdn.tailwindcss.com` with build-time Tailwind (`@tailwindcss/vite`) | Removes a third-party runtime script (ECC web rule: no unnecessary third-party scripts) and makes a strict CSP possible |
-| P1 | Add a CSP `<meta http-equiv="Content-Security-Policy">`, since GitHub Pages can't set headers | Limits XSS impact. Allow `self`, Google Fonts, `api.web3forms.com`, `api.github.com` |
 | P1 | Web3Forms dashboard: lock the access key to `paristat.github.io`; add hCaptcha if spam appears | The key is public by design; a domain lock stops reuse elsewhere |
-| P2 | Pin `actions/*` in `deploy.yml` to commit SHAs | Supply-chain hardening for the deploy pipeline |
-| P2 | Drop the plain email from page text and hidden inputs | Scraper spam; the form already delivers to it |
+| P1 | After the first deploy: if the Activity section is missing, the built-in token can't read contributions. Add a `STATS_TOKEN` secret (fine-grained PAT, read-only) | The fetch fails soft, so the deploy stays green either way |
+
+## CI
+
+| Pri | Item | Notes |
+|-----|------|-------|
+| P1 | `ci.yml` on `pull_request` (lint, typecheck, test, build) | Today the checks only run on push to `main`, after merge |
+| P1 | Dependabot: group minor/patch updates; `react` + `react-dom` together; ignore `@types/node` majors; group Actions updates. Then `@dependabot recreate` on PRs #2–#10 | Several open PRs are unsafe alone (react-dom without react, `@eslint/js` 10 vs eslint 9, vite 8) |
+| P2 | ESLint: lint `scripts/**/*.mjs` (change the glob to `scripts/**/*.{js,mjs}`) | Today the `.mjs` scripts get no rules. They pass cleanly once the glob is widened. The config-protection hook blocks agents from editing `eslint.config.js`, so this is a manual one-line change |
 
 ## Features
 
 | Pri | Item | Notes |
 |-----|------|-------|
-| P1 | **GitHub activity graph** (contributions heatmap + top languages) | Fetch at **build time** in Actions with the built-in `GITHUB_TOKEN` (GraphQL) → `public/github-stats.json` → render client-side. No token in the browser, no rate limits for visitors |
 | P1 | **"Building with AI": Claude Code daily-usage graph** | Render a sanitized `claude-usage.json` (daily tokens, sessions, model mix, **no prompts, paths or code**) exported by the planned AI-usage tracker (see `../ai-usage-tracker/IDEA.md`) |
 | P2 | Project case-study pages (problem → approach → result) | Stronger than cards alone |
 | P2 | EN / GR toggle | Copy the `LanguageContext` pattern from `wedding-site` (never import across repos) |
@@ -47,8 +69,6 @@ On `fix/cv-download`
 
 | Pri | Item | Notes |
 |-----|------|-------|
-| P0 | Compress background images: `bg-blackhole-website-section.jpg` is **5.5 MB**, `bg-wedding-site-section.webp` 1.7 MB | AVIF/WebP ≤ 300 KB + `srcset`; biggest load-time win (ECC web performance rules) |
-| P1 | More tests: `ContactSection` (validation and error states), `useGitHubRelease`; one Playwright smoke test in CI | Workspace target is 80% coverage; currently only the Hero CV link is tested |
-| P1 | SEO: real `<title>`, meta description, Open Graph/Twitter tags, `sitemap.xml`, `robots.txt`, JSON-LD `Person` | Title is still "Developer Portfolio" |
-| P1 | a11y: contact-form `<label>`s aren't linked to inputs (`htmlFor`/`id`); check focus styles and contrast | |
+| P1 | Content fixes: the wedding-site card says Next.js (it's Vite); typos "encorporates", "Hirring"; README is still the template; remove the leftover `metadata.json` | User's copy |
+| P2 | a11y audit in a real browser (axe/Lighthouse): contrast, focus order | Lint catches markup issues only |
 | P2 | Prettier + a format check in CI | ESLint is in; formatting isn't enforced yet |
