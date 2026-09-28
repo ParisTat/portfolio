@@ -31,6 +31,15 @@ test.describe('Portfolio smoke test', () => {
     expect(consoleErrors).toEqual([]);
   });
 
+  // Guards the Tailwind v4 cascade-layer trap: unlayered CSS in index.css silently overrides utilities.
+  test('keeps the header fixed and out of the page flow', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.locator('header')).toHaveCSS('position', 'fixed');
+    const heroTop = await page.locator('#hero').evaluate((el) => el.getBoundingClientRect().top);
+    expect(heroTop).toBe(0);
+  });
+
   test('the CV download link points to a downloadable pdf', async ({ page }) => {
     await page.goto('/');
 
