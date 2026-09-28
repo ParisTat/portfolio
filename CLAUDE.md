@@ -18,6 +18,8 @@ deployed to GitHub Pages at `https://paristat.github.io/portfolio/`. Contact for
 
 - Immutability always; no `console.log` in production code
 - Tailwind v4, built at compile time via `@tailwindcss/vite` (`index.css` holds the theme). No CDN
+- Custom CSS in `index.css` goes inside `@layer base` or `@layer components`. Unlayered CSS overrides every Tailwind utility; this once un-fixed the header
+- Tailwind v4 gotcha: an explicit `leading-*` beats the line height built into `md:text-*`, so set the breakpoint line height too (`leading-tight md:leading-none`)
 - ESLint includes `jsx-a11y`; an inline disable needs a `-- reason`
 
 ### 3. Testing
