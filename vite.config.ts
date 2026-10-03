@@ -40,10 +40,14 @@ function cspMetaPlugin(): Plugin {
 
 // Only VITE_-prefixed env vars reach the client bundle. Never inject other
 // secrets here via `define` — everything in the bundle is public.
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
     return {
       base: '/portfolio/', // <-- set to your repo name
       plugins: [tailwindcss(), cspMetaPlugin()],
+      // Production builds strip every console.* call and debugger statement, ours and
+      // dependencies' (esbuild applies `drop` while minifying each chunk). Dev keeps them.
+      // Note for a Vite 8 upgrade: minification moves to Oxc, where this option differs.
+      esbuild: command === 'build' ? { drop: ['console', 'debugger'] } : undefined,
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

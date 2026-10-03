@@ -7,6 +7,63 @@ test.describe('Portfolio smoke test', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
+  test('loads without console errors or CSP violations', async ({ page }) => {
+    const consoleErrors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+    });
+    page.on('pageerror', (error) => consoleErrors.push(error.message));
+    await page.addInitScript(() => {
+      const violations: string[] = [];
+      (window as unknown as { __cspViolations: string[] }).__cspViolations = violations;
+      document.addEventListener('securitypolicyviolation', (event) => {
+        violations.push(`${event.violatedDirective} ${event.blockedURI}`);
+      });
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    const cspViolations = await page.evaluate(
+      () => (window as unknown as { __cspViolations: string[] }).__cspViolations,
+    );
+    expect(cspViolations).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
+
+  // Guards the Tailwind v4 cascade-layer trap: unlayered CSS in index.css silently overrides utilities.
+  test('keeps the header fixed and out of the page flow', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.locator('header')).toHaveCSS('position', 'fixed');
+    const heroTop = await page.locator('#hero').evaluate((el) => el.getBoundingClientRect().top);
+    expect(heroTop).toBe(0);
+  });
+
+  // Real hit-testing, which jsdom can't do: Playwright refuses to click an element another layer
+  // covers. Guards the X button (above the backdrop) and the panel links (above the backdrop too).
+  test('the mobile menu closes with the X and its links sit above the backdrop', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: /toggle mobile menu/i });
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    // A tap on the page outside the panel (bottom-left corner) lands on the backdrop and closes the menu.
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await page.mouse.click(20, 760);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await toggle.click();
+    await page.getByRole('navigation', { name: 'Mobile' }).getByRole('link', { name: 'Contact' }).click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#contact')).toBeInViewport();
+  });
+
   test('the CV download link points to a downloadable pdf', async ({ page }) => {
     await page.goto('/');
 

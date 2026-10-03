@@ -1,14 +1,12 @@
 import React from 'react';
 import { useScrollBehavior } from '../hooks/useScrollBehavior';
 import { useMobileMenu } from '../hooks/useMobileMenu';
-import { useClickOutside } from '../hooks/useClickOutside';
 import { handleNavigation, getNavigationItems } from '../utils/navigation';
 
 const Header: React.FC = () => {
   // Custom hooks for clean separation of concerns
   const { isScrolled, isVisible } = useScrollBehavior();
   const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
-  const mobileMenuRef = useClickOutside<HTMLDivElement>(closeMobileMenu);
 
   // Get navigation items from utility
   const navigationItems = getNavigationItems();
@@ -38,7 +36,7 @@ const Header: React.FC = () => {
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:block">
+        <nav aria-label="Main" className="hidden md:block">
           <ul className="flex space-x-8">
             {navigationItems.map((item) => (
               <li key={item.href}>
@@ -81,52 +79,32 @@ const Header: React.FC = () => {
           />
         </button>
 
-        {/* Mobile Menu Overlay */}
-        <div 
-          ref={mobileMenuRef}
-          className={`md:hidden fixed top-0 right-0 h-screen w-64 bg-slate-900/95 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        {/* Mobile Menu Overlay. Stacking: backdrop z-40 < panel z-50 < logo and burger/X z-60.
+            Taps outside the panel land on the backdrop, which closes the menu. A document-level
+            click-outside listener used to do this too, but its mousedown closed the menu just
+            before the X button's click toggled it open again. */}
+        <div
+          className={`md:hidden fixed top-0 right-0 z-50 h-screen w-64 bg-slate-900/95 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out ${
             isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <div className="pt-20 px-6">
-            <nav>
+            <nav aria-label="Mobile">
               <ul className="space-y-6">
-                <li>
-                  <a 
-                    href="#hero" 
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#hero');
-                    }}
-                  >
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a 
-                    href="#projects" 
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#projects');
-                    }}
-                  >
-                    Projects
-                  </a>
-                </li>
-                <li>
-                  <a 
-                    href="#contact" 
-                    className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavClick('#contact');
-                    }}
-                  >
-                    Contact
-                  </a>
-                </li>
+                {navigationItems.map((item) => (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      className="block text-xl font-medium text-white hover:text-sky-400 transition-colors py-2 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onNavClick(item.href);
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
@@ -134,12 +112,16 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu Backdrop: a decorative click-outside overlay only -
             keyboard users already close the menu via Escape (handled in
-            useMobileMenu), so this stays out of the a11y tree. */}
+            useMobileMenu), so this stays out of the a11y tree.
+            Sized with w-screen/h-screen, not inset-0: the header's translate and
+            backdrop-blur make it the containing block for fixed children, so inset-0
+            would only cover the header strip. While the menu is open the header sits
+            at the top and the page can't scroll, so this matches the viewport. */}
         {isMobileMenuOpen && (
           <div
             data-testid="mobile-menu-backdrop"
             aria-hidden="true"
-            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-40"
+            className="md:hidden fixed top-0 left-0 h-screen w-screen bg-black/50 backdrop-blur-xs z-40"
             onClick={closeMobileMenu}
           />
         )}

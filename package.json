@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "fetch:stats": "node scripts/fetch-github-stats.mjs"
   },
   "dependencies": {
     "react": "^19.1.1",

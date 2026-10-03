@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Header from './Header';
 
@@ -32,6 +33,31 @@ describe('Header', () => {
 
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  // userEvent sends the full pointerdown/mousedown/click sequence of a real tap. fireEvent.click
+  // sends only the click, which hid a bug where mousedown closed the menu and click reopened it.
+  it('closes the open mobile menu when the X (toggle) button is tapped', async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const toggle = screen.getByRole('button', { name: /toggle mobile menu/i });
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('keeps the mobile menu open when a tap lands inside the panel', async () => {
+    const user = userEvent.setup();
+    render(<Header />);
+    const toggle = screen.getByRole('button', { name: /toggle mobile menu/i });
+
+    await user.click(toggle);
+    await user.click(screen.getByRole('navigation', { name: 'Mobile' }));
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('closes the mobile menu when Escape is pressed', () => {

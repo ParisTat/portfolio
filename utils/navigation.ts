@@ -57,5 +57,6 @@ export const handleNavigation = (href: string, onNavigate?: () => void): void =>
 export const getNavigationItems = () => [
   { href: '#hero', label: 'Home' },
   { href: '#projects', label: 'Projects' },
+  { href: '#activity', label: 'Activity' },
   { href: '#contact', label: 'Contact' }
 ];

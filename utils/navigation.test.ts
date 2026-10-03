@@ -84,10 +84,11 @@ describe('handleNavigation', () => {
 });
 
 describe('getNavigationItems', () => {
-  it('returns the hero, projects and contact links', () => {
+  it('returns the hero, projects, activity and contact links', () => {
     expect(getNavigationItems()).toEqual([
       { href: '#hero', label: 'Home' },
       { href: '#projects', label: 'Projects' },
+      { href: '#activity', label: 'Activity' },
       { href: '#contact', label: 'Contact' },
     ]);
   });

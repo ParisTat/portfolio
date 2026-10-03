@@ -5,6 +5,7 @@ import cvUrl from '../assets/documents/cv.pdf?url';
 import { cvConfig } from '../config/cvConfig';
 
 const dynamicWords = ["Experiences", "Solutions", "Web Apps"];
+const ctaLayout = 'text-center whitespace-nowrap';
 
 const Hero: React.FC = () => {
   const [wordIndex, setWordIndex] = useState(0);
@@ -47,14 +48,15 @@ const Hero: React.FC = () => {
         <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto md:mx-0">
           I'm a passionate developer specializing in creating modern, responsive, and user-friendly web applications. Let's turn your ideas into reality.
         </p>
-        <div className="flex justify-center md:justify-start space-x-4">
-          <a href="#projects" className="bg-sky-500 text-white font-bold py-3 px-8 rounded-full hover:bg-sky-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-sky-500/40 shadow-sky-500/20 transform hover:-translate-y-1">
+        {/* Phones: full-width stack. From sm up: one row, each label on a single line. */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-xs mx-auto sm:max-w-none sm:mx-0 justify-center md:justify-start">
+          <a href="#projects" className={`${ctaLayout} bg-sky-500 text-white font-bold py-3 px-8 rounded-full hover:bg-sky-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-sky-500/40 shadow-sky-500/20 transform hover:-translate-y-1`}>
             View My Work
           </a>
-          <a href="#contact" className="bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1">
+          <a href="#contact" className={`${ctaLayout} bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1`}>
             Get In Touch
           </a>
-          <a href={cvUrl} download={cvConfig.downloadName} className={cvConfig.buttonClass}>
+          <a href={cvUrl} download={cvConfig.downloadName} className={`${ctaLayout} ${cvConfig.buttonClass}`}>
             {cvConfig.buttonText}
           </a>
         </div>
