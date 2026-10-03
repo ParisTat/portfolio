@@ -68,7 +68,8 @@ Three branches, each built on the one before it. `feat/github-activity` is the t
   - The heatmap fills the card width and opens on the latest weeks on mobile (T3).
   - New back-to-top button (`components/BackToTop.tsx`): appears after 600px, honours reduced motion, and is out of the tab order while hidden.
   - Production builds strip every `console.*` call and `debugger` statement (`esbuild.drop` in `vite.config.ts`, build only). The bundle went from 8 console calls to 0. Messages injected by browser extensions can't be removed by the site.
-  - Checks: lint, typecheck, 116 unit tests, build. e2e was not re-run locally; CI runs it before every deploy.
+  - The burger menu's X closes it again (T5). The unused `useClickOutside` hook was removed.
+  - Checks: lint, typecheck, 115 unit tests, 7/7 e2e (one new for the mobile menu), build.
 
 ### Setup (PowerShell, from `portfolio/`)
 
@@ -131,7 +132,7 @@ Keyboard and accessibility
 
 Mobile (DevTools device toolbar, 375 × 800)
 - [x] No sideways page scroll. The hero stacks (text, then photo). The heatmap scrolls sideways inside its card only.
-- [x] Burger menu: opens from the right with Home / Projects / Activity / Contact. A link closes the menu and scrolls. Esc or a tap outside closes it.
+- [x] Burger menu: opens from the right with Home / Projects / Activity / Contact. A link closes the menu and scrolls. **The X**, Esc, or a tap outside closes it. (Re-tested after the T5 fix.)
 
 Optional
 - [ ] Lighthouse (DevTools → Lighthouse, mobile): Performance should be higher than on the live site thanks to the images; SEO and Accessibility 90+.
@@ -256,4 +257,5 @@ Add a row for anything the manual checklist turns up: what you did, what you exp
 | T1 | Open the hero at phone width | Buttons readable | The three hero buttons squeeze into one row and wrap to 2–3 lines each | Chrome, 375 px | 3 | Fixed: stacked full width below `sm`, one row above |
 | T2 | Load the preview build with the console open | No errors | CSP blocks the web manifest: Vite inlined the 263-byte file as a `data:` URL, and its icon paths ignored the `/portfolio/` base | Chrome, desktop | 3 | Fixed: manifest + Android icons moved to `public/`, relative icon paths, name and theme colour filled in |
 | T3 | View the Activity section on desktop | Heatmap fills the card | Fixed 11 px cells fill only about half the card; on mobile the grid opened on the oldest weeks | Chrome, 2560 px and 375 px | 3 | Fixed: square cells stretch to fill (10 px minimum, then scroll); opens scrolled to the latest weeks |
+| T5 | Phone width: open the burger menu, tap the X | Menu closes | Menu stays open. A document-level click-outside listener closed it on mousedown, then the X's click toggled it open again. On `main` (Tailwind v3) `z-60` wasn't a real class, so the X sat under the backdrop and the tap closed the menu through the backdrop; v4 made `z-60` valid and exposed the bug | Chrome, 375 px | 3 | Fixed: listener removed, and the backdrop now really handles taps outside. It was `inset-0`, but the header's translate/backdrop-blur made it cover only the header strip, so it's now `w-screen h-screen`. Panel given `z-50` above the backdrop; mobile/desktop navs labelled. Unit test with real pointer events and a Playwright test that taps the X and a panel link |
 | T4 | `Should not init.` / `Should not init page.` in the console | — | Comes from a browser extension, not the site (the text isn't in the repo or the build) | Brave | — | Not a bug |
