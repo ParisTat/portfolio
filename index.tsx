@@ -6,7 +6,10 @@ import './index.css';
 import favicon32 from './assets/favicons/favicon-32x32.png';
 import favicon16 from './assets/favicons/favicon-16x16.png';
 import appleTouch from './assets/favicons/apple-touch-icon.png';
-import manifestUrl from './assets/favicons/site.webmanifest?url';
+
+// The manifest lives in public/: an imported asset this small gets inlined as a data: URL, which the CSP blocks.
+// Its icon paths are relative to the manifest, so they resolve under the /portfolio/ base.
+const manifestUrl = `${import.meta.env.BASE_URL}site.webmanifest`;
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
