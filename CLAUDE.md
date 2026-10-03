@@ -16,7 +16,7 @@ deployed to GitHub Pages at `https://paristat.github.io/portfolio/`. Contact for
 
 ### 2. Code Style
 
-- Immutability always; no `console.log` in production code
+- Immutability always; no `console.log` in production code. `vite build` also strips every `console.*` and `debugger` (`esbuild.drop` in `vite.config.ts`), so debug with `npm run dev`
 - Tailwind v4, built at compile time via `@tailwindcss/vite` (`index.css` holds the theme). No CDN
 - Custom CSS in `index.css` goes inside `@layer base` or `@layer components`. Unlayered CSS overrides every Tailwind utility; this once un-fixed the header
 - Tailwind v4 gotcha: an explicit `leading-*` beats the line height built into `md:text-*`, so set the breakpoint line height too (`leading-tight md:leading-none`)
