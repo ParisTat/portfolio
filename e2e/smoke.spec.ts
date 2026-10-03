@@ -40,6 +40,30 @@ test.describe('Portfolio smoke test', () => {
     expect(heroTop).toBe(0);
   });
 
+  // Real hit-testing, which jsdom can't do: Playwright refuses to click an element another layer
+  // covers. Guards the X button (above the backdrop) and the panel links (above the backdrop too).
+  test('the mobile menu closes with the X and its links sit above the backdrop', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: /toggle mobile menu/i });
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    // A tap on the page outside the panel (bottom-left corner) lands on the backdrop and closes the menu.
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await page.mouse.click(20, 760);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await toggle.click();
+    await page.getByRole('navigation', { name: 'Mobile' }).getByRole('link', { name: 'Contact' }).click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#contact')).toBeInViewport();
+  });
+
   test('the CV download link points to a downloadable pdf', async ({ page }) => {
     await page.goto('/');
 
