@@ -5,6 +5,7 @@ import ProjectsSection from './components/ProjectsSection';
 import GitHubActivity from './components/github-activity/GitHubActivity';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <ContactSection />
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };
