@@ -37,7 +37,7 @@ const Hero: React.FC = () => {
   return (
     <section id="hero" className="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center justify-between gap-12">
       <div className="md:w-3/5 text-center md:text-left">
-        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-4">
+        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight md:leading-none mb-4">
           Building Digital <br />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-teal-400 min-h-[6rem] md:min-h-[7rem] inline-block">
             {text || '\u00A0'}
@@ -61,11 +61,16 @@ const Hero: React.FC = () => {
       </div>
       <div className="md:w-2/5 flex justify-center">
         <div className="relative group">
-          <div className="absolute -inset-1.5 bg-gradient-to-r from-sky-500 to-teal-400 opacity-75 blur group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse hexagon"></div>
+          <div className="absolute -inset-1.5 bg-gradient-to-r from-sky-500 to-teal-400 opacity-75 blur-sm group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse hexagon"></div>
           <div className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden shadow-2xl shadow-sky-500/20 bg-slate-900 hexagon">
-              <img 
-                src={portrait} 
-                alt="Developer Portrait" 
+              <img
+                src={portrait}
+                alt="Developer Portrait"
+                width={1184}
+                height={864}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-cover"
               />
           </div>

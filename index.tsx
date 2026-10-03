@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
 import favicon32 from './assets/favicons/favicon-32x32.png';
 import favicon16 from './assets/favicons/favicon-16x16.png';
 import appleTouch from './assets/favicons/apple-touch-icon.png';
