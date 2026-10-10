@@ -9,6 +9,11 @@ updates:
       # Types must match the Node version CI runs (see the workflows); bump both together by hand.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # Hold ESLint at 9 until eslint-plugin-jsx-a11y supports ESLint 10 (its peer range ends at ^9).
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
     groups:
       # Packages that must move in lockstep get one PR each, including major bumps.
       react:
