@@ -5,7 +5,27 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Types must match the Node version CI runs (see the workflows); bump both together by hand.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+    groups:
+      # Packages that must move in lockstep get one PR each, including major bumps.
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      eslint:
+        patterns: ["eslint", "@eslint/*", "typescript-eslint", "eslint-plugin-*"]
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
+      tailwind:
+        patterns: ["tailwindcss", "@tailwindcss/*"]
+      # Everything else: minor and patch updates batched into one PR.
+      minor-and-patch:
+        update-types: ["minor", "patch"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
