@@ -52,7 +52,7 @@ scripts/fetch-github-stats.mjs   # build-time GitHub GraphQL fetch; fails soft (
 e2e/                             # Playwright smoke tests
 .github/workflows/deploy.yml     # lint, test, e2e, fetch stats, build, deploy to Pages; on push to main + weekly cron
 .github/workflows/ci.yml         # same checks on every PR to main, no deploy, no secrets
-.github/dependabot.yml           # grouped updates; ignores @types/node majors (keep at CI's Node 24) and ESLint majors (jsx-a11y needs 9)
+.github/dependabot.yml           # grouped updates; ignores @types/node majors (keep at CI's Node 24) ESLint majors (jsx-a11y needs 9) and TypeScript 7+ (typescript-eslint)
 ```
 
 ## Environment Variables
