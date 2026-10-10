@@ -51,6 +51,8 @@ public/                          # robots.txt, sitemap.xml, og-image; github-sta
 scripts/fetch-github-stats.mjs   # build-time GitHub GraphQL fetch; fails soft (no file = section hidden)
 e2e/                             # Playwright smoke tests
 .github/workflows/deploy.yml     # lint, test, e2e, fetch stats, build, deploy to Pages; on push to main + weekly cron
+.github/workflows/ci.yml         # same checks on every PR to main, no deploy, no secrets
+.github/dependabot.yml           # grouped updates; @types/node majors ignored (bump with CI's Node version)
 ```
 
 ## Environment Variables
