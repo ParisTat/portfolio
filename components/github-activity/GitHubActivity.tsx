@@ -1,16 +1,19 @@
 import React from 'react';
-import { useGitHubStats } from './useGitHubStats';
+import type { GitHubStatsState } from './useGitHubStats';
 import ContributionHeatmap from './ContributionHeatmap';
 import LanguageBar from './LanguageBar';
+
+interface GitHubActivityProps {
+  /** Loader state from useGitHubStats, called once in App so the nav can share it. */
+  state: GitHubStatsState;
+}
 
 /**
  * Renders the GitHub activity section (contribution heatmap + top languages) from the
  * build-time github-stats.json snapshot. Renders nothing when the file is missing,
  * still loading, or fails validation — e.g. local dev without a GITHUB_TOKEN.
  */
-const GitHubActivity: React.FC = () => {
-  const state = useGitHubStats();
-
+const GitHubActivity: React.FC<GitHubActivityProps> = ({ state }) => {
   if (state.status !== 'success') return null;
 
   const { data } = state;

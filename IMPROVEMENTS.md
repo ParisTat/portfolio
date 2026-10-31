@@ -92,7 +92,7 @@ Optional, to see the Activity section locally: create a fine-grained GitHub toke
 $env:GITHUB_TOKEN = "<token>"; npm run fetch:stats; Remove-Item Env:GITHUB_TOKEN
 npm run build; npm run preview
 ```
-Without it, the Activity section is hidden locally. That's expected, and it will appear after the first deploy.
+Without it, the Activity section and its nav link are hidden locally. That's expected, and it will appear after the first deploy.
 
 ### Manual checklist (preview build, desktop Chrome + DevTools open) — passed 2026-10-03
 
@@ -104,7 +104,7 @@ Page load and security
 Header and navigation
 - [x] The header sits over the hero at the very top. Hero text starts about 130px from the top, as on the live site.
 - [x] Scroll down: the header hides. Scroll up a bit: it comes back with a dark blurred background and stays pinned.
-- [x] Desktop nav shows Home · Projects · Activity · Contact. Each scrolls smoothly to its section (Activity only if stats exist; see Known issues).
+- [x] Desktop nav shows Home · Projects · Activity · Contact. Each scrolls smoothly to its section (Activity shows only when valid stats have loaded).
 
 Hero
 - [x] "Building Digital" and the typing word sit close together, as on the live site. The blinking cursor works and the hexagon photo has its glow.
@@ -244,7 +244,7 @@ Owning branch: 1 = `feat/build-tailwind-csp-seo`, 2 = `feat/contact-a11y-and-tes
 
 | # | Bug | Impact | Proposed fix | Branch | Status |
 |---|-----|--------|--------------|--------|--------|
-| K1 | If `github-stats.json` is missing, the Activity section hides but the **Activity nav link stays** and does nothing when clicked. This happens locally without a token, and in production if the CI fetch fails | Dead nav link (desktop and mobile). On GitHub Pages the missing file also logs a 404 in the console | Hide the nav item when there are no stats, or always render a small "Activity unavailable" section | 3 | Open |
+| K1 | If `github-stats.json` is missing, the Activity section hides but the **Activity nav link stays** and does nothing when clicked. This happens locally without a token, and in production if the CI fetch fails | Dead nav link (desktop and mobile). On GitHub Pages the missing file also logs a 404 in the console | Hide the nav item when there are no stats, or always render a small "Activity unavailable" section | 3 | Fixed: the Activity nav link (desktop and mobile) shows only once valid stats have loaded; `App` loads them once for the section and the nav. The 404 console log on Pages remains |
 | K2 | `eslint.config.js` only lints `scripts/**/*.js`, so `scripts/*.mjs` get no lint rules | Lint gap only; the scripts pass once included | Change the glob to `scripts/**/*.{js,mjs}` by hand (the ECC config-protection hook blocks agents from editing it) | 3 | Open |
 | K3 | After a failed submit, focus stays on the Send button instead of moving to the first field with an error | Minor a11y: screen-reader users hear each error only when they reach that field | Focus the first invalid field on submit | 2 | Open |
 

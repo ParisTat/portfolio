@@ -43,12 +43,12 @@ deployed to GitHub Pages at `https://paristat.github.io/portfolio/`. Contact for
 ```
 App.tsx, index.tsx, index.html   # entry
 components/                      # page sections (Hero, ProjectsSection, ProjectCard, ContactSection, Footer, ...)
-components/github-activity/      # heatmap + language bar, rendered from public/github-stats.json
+components/github-activity/      # heatmap + language bar, rendered from public/github-stats.json (loaded once in App via useGitHubStats; the Header's Activity link depends on it)
 config/                          # project/CV data
 hooks/, utils/                   # shared logic
 assets/                          # images, favicons; CV is always assets/documents/cv.pdf
 public/                          # robots.txt, sitemap.xml, og-image; github-stats.json is generated (gitignored)
-scripts/fetch-github-stats.mjs   # build-time GitHub GraphQL fetch; fails soft (no file = section hidden)
+scripts/fetch-github-stats.mjs   # build-time GitHub GraphQL fetch; fails soft (no file = section and its nav link hidden)
 e2e/                             # Playwright smoke tests
 .github/workflows/deploy.yml     # lint, test, e2e, fetch stats, build, deploy to Pages; on push to main + weekly cron
 .github/workflows/ci.yml         # same checks on every PR to main, no deploy, no secrets

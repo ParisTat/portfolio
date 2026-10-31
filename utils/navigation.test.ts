@@ -84,11 +84,19 @@ describe('handleNavigation', () => {
 });
 
 describe('getNavigationItems', () => {
-  it('returns the hero, projects, activity and contact links', () => {
-    expect(getNavigationItems()).toEqual([
+  it('returns the hero, projects, activity and contact links when activity stats are available', () => {
+    expect(getNavigationItems({ hasActivity: true })).toEqual([
       { href: '#hero', label: 'Home' },
       { href: '#projects', label: 'Projects' },
       { href: '#activity', label: 'Activity' },
+      { href: '#contact', label: 'Contact' },
+    ]);
+  });
+
+  it('omits the activity link when there are no activity stats', () => {
+    expect(getNavigationItems({ hasActivity: false })).toEqual([
+      { href: '#hero', label: 'Home' },
+      { href: '#projects', label: 'Projects' },
       { href: '#contact', label: 'Contact' },
     ]);
   });
