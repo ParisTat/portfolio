@@ -65,6 +65,185 @@ describe('ContactSection', () => {
     expect(await screen.findByText(/please enter a valid email address/i)).toBeInTheDocument();
   });
 
+  describe('focus management after a failed submit', () => {
+    it('moves focus to the name field when every field is invalid', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal('fetch', vi.fn());
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      await user.click(screen.getByRole('button', { name: /send message/i }));
+
+      expect(await screen.findByText(/please enter your name/i)).toBeInTheDocument();
+      expect(screen.getByLabelText('Name')).toHaveFocus();
+      expect(screen.getByLabelText('Name')).toHaveAccessibleDescription('Please enter your name.');
+    });
+
+    it('announces field errors through the focused field instead of assertive alerts', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal('fetch', vi.fn());
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      await user.click(screen.getByRole('button', { name: /send message/i }));
+
+      // All three fields are invalid, yet none of the inline messages is a
+      // role="alert" region: that would stack up to three assertive
+      // announcements on top of the focused field's own description.
+      expect(await screen.findByText(/please enter your name/i)).toBeInTheDocument();
+      expect(screen.getByText(/please enter your email address/i)).toBeInTheDocument();
+      expect(screen.getByText(/message must be at least/i)).toBeInTheDocument();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    it('keeps focus on the first invalid field when a failed submit is repeated', async () => {
+      const user = userEvent.setup();
+      const fetchSpy = vi.fn();
+      vi.stubGlobal('fetch', fetchSpy);
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      const sendButton = screen.getByRole('button', { name: /send message/i });
+      await user.click(sendButton);
+      expect(screen.getByLabelText('Name')).toHaveFocus();
+
+      await user.click(sendButton);
+      expect(screen.getByLabelText('Name')).toHaveFocus();
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('moves focus on to the next invalid field as each one is fixed and the form is resubmitted', async () => {
+      const user = userEvent.setup();
+      const fetchSpy = vi.fn();
+      vi.stubGlobal('fetch', fetchSpy);
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      const sendButton = screen.getByRole('button', { name: /send message/i });
+      await user.click(sendButton);
+      expect(screen.getByLabelText('Name')).toHaveFocus();
+
+      await user.type(screen.getByLabelText('Name'), 'Jane Doe');
+      await user.click(sendButton);
+      expect(screen.getByLabelText('Email')).toHaveFocus();
+      expect(screen.getByLabelText('Name')).not.toHaveAttribute('aria-invalid');
+
+      await user.type(screen.getByLabelText('Email'), 'jane@example.com');
+      await user.click(sendButton);
+      expect(screen.getByLabelText('Message')).toHaveFocus();
+      expect(screen.getByLabelText('Email')).not.toHaveAttribute('aria-invalid');
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ['malformed', 'not-a-uuid'],
+      ['missing', ''],
+    ])('leaves focus on the Send button when the fields are valid but the access key is %s', async (_label, accessKey) => {
+      const user = userEvent.setup();
+      const fetchSpy = vi.fn();
+      vi.stubGlobal('fetch', fetchSpy);
+
+      const ContactSection = await loadContactSection(accessKey);
+      render(<ContactSection />);
+
+      await fillValidForm(user);
+      const sendButton = screen.getByRole('button', { name: /send message/i });
+      await user.click(sendButton);
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(/something went wrong/i);
+      expect(sendButton).toHaveFocus();
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('moves focus to the email field when only the name is valid and the email is malformed', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal('fetch', vi.fn());
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      await user.type(screen.getByLabelText('Name'), 'Jane Doe');
+      await user.type(screen.getByLabelText('Email'), 'not-an-email');
+      await user.click(screen.getByRole('button', { name: /send message/i }));
+
+      expect(await screen.findByText(/please enter a valid email address/i)).toBeInTheDocument();
+      expect(screen.getByLabelText('Email')).toHaveFocus();
+      expect(screen.getByLabelText('Email')).toHaveAccessibleDescription('Please enter a valid email address.');
+    });
+
+    it('moves focus to the message field when only the message is too short', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal('fetch', vi.fn());
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      await user.type(screen.getByLabelText('Name'), 'Jane Doe');
+      await user.type(screen.getByLabelText('Email'), 'jane@example.com');
+      await user.type(screen.getByLabelText('Message'), 'short');
+      await user.click(screen.getByRole('button', { name: /send message/i }));
+
+      expect(await screen.findByText(/message must be at least/i)).toBeInTheDocument();
+      expect(screen.getByLabelText('Message')).toHaveFocus();
+      expect(screen.getByLabelText('Message')).toHaveAccessibleDescription('Message must be at least 10 characters.');
+    });
+
+    it('marks the field invalid and links its error before it receives focus', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal('fetch', vi.fn());
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      // Screen readers read aria-invalid / aria-describedby at the moment of
+      // focus, so the error wiring must already be in the DOM by then.
+      const emailInput = screen.getByLabelText('Email');
+      const seenOnFocus: Array<{ invalid: string | null; describedBy: string | null; errorText: string | null }> = [];
+      emailInput.addEventListener('focus', () => {
+        const describedBy = emailInput.getAttribute('aria-describedby');
+        seenOnFocus.push({
+          invalid: emailInput.getAttribute('aria-invalid'),
+          describedBy,
+          errorText: describedBy ? (document.getElementById(describedBy)?.textContent ?? null) : null,
+        });
+      });
+
+      await user.type(screen.getByLabelText('Name'), 'Jane Doe');
+      await user.type(emailInput, 'not-an-email');
+      seenOnFocus.length = 0; // ignore the focus caused by typing itself
+      await user.click(screen.getByRole('button', { name: /send message/i }));
+
+      await screen.findByText(/please enter a valid email address/i);
+      expect(seenOnFocus).toEqual([
+        { invalid: 'true', describedBy: expect.any(String), errorText: 'Please enter a valid email address.' },
+      ]);
+    });
+
+    it('does not move focus away from the button when the submit passes validation', async () => {
+      const user = userEvent.setup();
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+      );
+
+      const ContactSection = await loadContactSection();
+      render(<ContactSection />);
+
+      await fillValidForm(user);
+      const button = screen.getByRole('button', { name: /send message/i });
+      await user.click(button);
+
+      expect(await screen.findByText(/thanks! your message has been sent/i)).toBeInTheDocument();
+      expect(screen.getByLabelText('Name')).not.toHaveFocus();
+      expect(screen.getByLabelText('Email')).not.toHaveFocus();
+      expect(screen.getByLabelText('Message')).not.toHaveFocus();
+    });
+  });
+
   it('submits successfully and resets the form', async () => {
     const user = userEvent.setup();
     const fetchSpy = vi.fn().mockResolvedValue({
