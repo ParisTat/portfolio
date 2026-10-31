@@ -53,10 +53,11 @@ export const handleNavigation = (href: string, onNavigate?: () => void): void =>
 
 /**
  * Get navigation items configuration
+ * @param options.hasActivity Whether the Activity section is rendered (GitHub stats loaded and valid)
  */
-export const getNavigationItems = () => [
+export const getNavigationItems = ({ hasActivity }: { hasActivity: boolean }) => [
   { href: '#hero', label: 'Home' },
   { href: '#projects', label: 'Projects' },
-  { href: '#activity', label: 'Activity' },
+  ...(hasActivity ? [{ href: '#activity', label: 'Activity' }] : []),
   { href: '#contact', label: 'Contact' }
 ];

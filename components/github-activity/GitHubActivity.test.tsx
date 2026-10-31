@@ -1,70 +1,28 @@
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import GitHubActivity from './GitHubActivity';
 import { githubStatsFixture } from './__fixtures__/githubStatsFixture';
 
-function mockFetchOnce(response: { ok: boolean; status?: number; json?: () => Promise<unknown> }) {
-  const fetchMock = vi.fn().mockResolvedValue({
-    ok: response.ok,
-    status: response.status ?? (response.ok ? 200 : 404),
-    json: response.json ?? (() => Promise.resolve(undefined)),
-  });
-  vi.stubGlobal('fetch', fetchMock);
-  return fetchMock;
-}
-
-afterEach(() => {
-  cleanup();
-  vi.unstubAllGlobals();
-  vi.restoreAllMocks();
-});
-
 describe('GitHubActivity', () => {
-  it('renders the heatmap and languages from a fetched fixture', async () => {
-    mockFetchOnce({ ok: true, json: () => Promise.resolve(githubStatsFixture) });
+  it('renders the heatmap and languages from loaded stats', () => {
+    render(<GitHubActivity state={{ status: 'success', data: githubStatsFixture }} />);
 
-    render(<GitHubActivity />);
-
-    expect(await screen.findByRole('heading', { name: /GitHub Activity/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /GitHub Activity/i })).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /15 contributions in the last year/i })).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('65%')).toBeInTheDocument();
   });
 
-  it('renders nothing when the stats file 404s', async () => {
-    mockFetchOnce({ ok: false, status: 404 });
+  it('renders nothing while the stats are loading', () => {
+    const { container } = render(<GitHubActivity state={{ status: 'loading' }} />);
 
-    const { container } = render(<GitHubActivity />);
+    expect(container).toBeEmptyDOMElement();
+  });
 
-    await waitFor(() => expect(container).toBeEmptyDOMElement());
+  it('renders nothing when the stats failed to load or validate', () => {
+    const { container } = render(<GitHubActivity state={{ status: 'error' }} />);
+
+    expect(container).toBeEmptyDOMElement();
     expect(screen.queryByRole('heading', { name: /GitHub Activity/i })).not.toBeInTheDocument();
-  });
-
-  it('renders nothing when the JSON fails the shape guard', async () => {
-    mockFetchOnce({ ok: true, json: () => Promise.resolve({ not: 'valid' }) });
-
-    const { container } = render(<GitHubActivity />);
-
-    await waitFor(() => expect(container).toBeEmptyDOMElement());
-  });
-
-  it('aborts the in-flight fetch on unmount', async () => {
-    let capturedSignal: AbortSignal | undefined;
-    const fetchMock = vi.fn((_input: RequestInfo | URL, init?: RequestInit) => {
-      capturedSignal = init?.signal ?? undefined;
-      return new Promise(() => {
-        // never resolves — simulates an in-flight request at unmount time
-      });
-    });
-    vi.stubGlobal('fetch', fetchMock);
-
-    const { unmount } = render(<GitHubActivity />);
-
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    expect(capturedSignal?.aborted).toBe(false);
-
-    unmount();
-
-    expect(capturedSignal?.aborted).toBe(true);
   });
 });

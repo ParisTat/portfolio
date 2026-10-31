@@ -3,13 +3,18 @@ import { useScrollBehavior } from '../hooks/useScrollBehavior';
 import { useMobileMenu } from '../hooks/useMobileMenu';
 import { handleNavigation, getNavigationItems } from '../utils/navigation';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  /** Whether the Activity section is rendered; the Activity nav link is hidden otherwise. */
+  hasActivity: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ hasActivity }) => {
   // Custom hooks for clean separation of concerns
   const { isScrolled, isVisible } = useScrollBehavior();
   const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
 
   // Get navigation items from utility
-  const navigationItems = getNavigationItems();
+  const navigationItems = getNavigationItems({ hasActivity });
 
   // Handle navigation with mobile menu closure
   const onNavClick = (href: string) => {
