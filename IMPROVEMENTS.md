@@ -246,7 +246,7 @@ Owning branch: 1 = `feat/build-tailwind-csp-seo`, 2 = `feat/contact-a11y-and-tes
 |---|-----|--------|--------------|--------|--------|
 | K1 | If `github-stats.json` is missing, the Activity section hides but the **Activity nav link stays** and does nothing when clicked. This happens locally without a token, and in production if the CI fetch fails | Dead nav link (desktop and mobile). On GitHub Pages the missing file also logs a 404 in the console | Hide the nav item when there are no stats, or always render a small "Activity unavailable" section | 3 | Fixed: the Activity nav link (desktop and mobile) shows only once valid stats have loaded; `App` loads them once for the section and the nav. The 404 console log on Pages remains |
 | K2 | `eslint.config.js` only lints `scripts/**/*.js`, so `scripts/*.mjs` get no lint rules | Lint gap only; the scripts pass once included | Change the glob to `scripts/**/*.{js,mjs}` by hand (the ECC config-protection hook blocks agents from editing it) | 3 | Open |
-| K3 | After a failed submit, focus stays on the Send button instead of moving to the first field with an error | Minor a11y: screen-reader users hear each error only when they reach that field | Focus the first invalid field on submit | 2 | Open |
+| K3 | After a failed submit, focus stays on the Send button instead of moving to the first field with an error | Minor a11y: screen-reader users hear each error only when they reach that field | Focus the first invalid field on submit | 2 | Fixed: a failed submit focuses the first invalid field in DOM order (name, email, message), after the error state is flushed so `aria-invalid` / `aria-describedby` are already set when it takes focus. Covered in `ContactSection.test.tsx` |
 
 ### From testing
 

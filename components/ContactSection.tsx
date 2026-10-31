@@ -1,4 +1,5 @@
-import React, { useId, useState } from 'react';
+import React, { useId, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
 const ACCESS_KEY = (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '').trim();
@@ -45,6 +46,10 @@ interface Web3FormsResponse {
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 const initialValues: ContactFormValues = { name: '', email: '', message: '', botcheck: '' };
+
+// Same order as the fields appear in the DOM, so "first invalid field" matches
+// what a keyboard or screen-reader user would reach first.
+const VALIDATED_FIELDS: ReadonlyArray<keyof ContactFormErrors> = ['name', 'email', 'message'];
 
 function validateValues(values: ContactFormValues): ContactFormErrors {
   const errors: ContactFormErrors = {};
@@ -94,6 +99,11 @@ const ContactSection: React.FC = () => {
   const messageErrorId = useId();
   const honeypotId = useId();
 
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const fieldRefs = { name: nameRef, email: emailRef, message: messageRef };
+
   const [values, setValues] = useState<ContactFormValues>(initialValues);
   const [fieldErrors, setFieldErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<SubmitStatus>('idle');
@@ -122,10 +132,16 @@ const ContactSection: React.FC = () => {
     e.preventDefault();
 
     const errors = validateValues(values);
-    setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) {
+    const firstInvalidField = VALIDATED_FIELDS.find((field) => errors[field]);
+    if (firstInvalidField) {
+      // Commit the error state to the DOM first: a screen reader reads
+      // aria-invalid / aria-describedby when a field takes focus, so they must
+      // already be in place when focus moves.
+      flushSync(() => setFieldErrors(errors));
+      fieldRefs[firstInvalidField].current?.focus();
       return;
     }
+    setFieldErrors(errors);
 
     if (!UUID_RE.test(ACCESS_KEY)) {
       setStatus('error');
@@ -195,6 +211,7 @@ const ContactSection: React.FC = () => {
               </label>
               <input
                 type="text"
+                ref={nameRef}
                 id={nameId}
                 name="name"
                 autoComplete="name"
@@ -208,7 +225,7 @@ const ContactSection: React.FC = () => {
                 placeholder="Your name"
               />
               {fieldErrors.name && (
-                <p id={nameErrorId} role="alert" className="text-rose-400 text-sm mt-1">
+                <p id={nameErrorId} className="text-rose-400 text-sm mt-1">
                   {fieldErrors.name}
                 </p>
               )}
@@ -219,6 +236,7 @@ const ContactSection: React.FC = () => {
               </label>
               <input
                 type="email"
+                ref={emailRef}
                 id={emailId}
                 name="email"
                 autoComplete="email"
@@ -231,7 +249,7 @@ const ContactSection: React.FC = () => {
                 placeholder="you@example.com"
               />
               {fieldErrors.email && (
-                <p id={emailErrorId} role="alert" className="text-rose-400 text-sm mt-1">
+                <p id={emailErrorId} className="text-rose-400 text-sm mt-1">
                   {fieldErrors.email}
                 </p>
               )}
@@ -243,6 +261,7 @@ const ContactSection: React.FC = () => {
               Message
             </label>
             <textarea
+              ref={messageRef}
               id={messageId}
               name="message"
               autoComplete="off"
@@ -258,7 +277,7 @@ const ContactSection: React.FC = () => {
               placeholder="How can I help?"
             />
             {fieldErrors.message && (
-              <p id={messageErrorId} role="alert" className="text-rose-400 text-sm mt-1">
+              <p id={messageErrorId} className="text-rose-400 text-sm mt-1">
                 {fieldErrors.message}
               </p>
             )}
