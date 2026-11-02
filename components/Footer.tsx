@@ -9,6 +9,7 @@ const Footer: React.FC = () => {
         <div className="flex justify-center space-x-6 mb-4">
           <a
             href="https://github.com/ParisTat"
+            aria-label="GitHub profile"
             className="hover:text-sky-400 transition-colors transform hover:scale-110"
             target="_blank"
             rel="noopener noreferrer"
@@ -17,6 +18,7 @@ const Footer: React.FC = () => {
           </a>
           <a
             href="https://www.linkedin.com/in/paris-rafail-tataridis-494767231/"
+            aria-label="LinkedIn profile"
             className="hover:text-sky-400 transition-colors transform hover:scale-110"
             target="_blank"
             rel="noopener noreferrer"
