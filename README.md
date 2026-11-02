@@ -15,7 +15,7 @@ It is a single-page site with a hero, featured projects, GitHub activity, a CV d
 
 ```bash
 npm ci
-cp .env.example .env.local   # if present; set VITE_WEB3FORMS_ACCESS_KEY
+cp .env.example .env.local   # then set VITE_WEB3FORMS_ACCESS_KEY
 npm run dev
 ```
 
@@ -38,7 +38,7 @@ The contact form needs `VITE_WEB3FORMS_ACCESS_KEY` (a public key, locked to the 
 ## Structure
 
 - `components/` page sections and cards
-- `config/` project and CV data
+- `config/` CV config (`cvConfig.ts`); the project cards are in `components/ProjectsSection.tsx`
 - `hooks/`, `utils/` shared logic
 - `assets/` images, favicons and the CV (`assets/documents/cv.pdf`)
 - `e2e/` Playwright tests
