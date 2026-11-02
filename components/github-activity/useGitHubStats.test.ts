@@ -20,7 +20,10 @@ afterEach(() => {
 
 describe('useGitHubStats', () => {
   it('starts in the loading state', () => {
-    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise(() => {})),
+    );
 
     const { result } = renderHook(() => useGitHubStats());
 

@@ -57,7 +57,8 @@ export function parseGitHubStats(data: unknown): GitHubStats | null {
   if (typeof data !== 'object' || data === null) return null;
   const stats = data as Record<string, unknown>;
 
-  if (typeof stats.generatedAt !== 'string' || Number.isNaN(Date.parse(stats.generatedAt))) return null;
+  if (typeof stats.generatedAt !== 'string' || Number.isNaN(Date.parse(stats.generatedAt)))
+    return null;
   if (typeof stats.login !== 'string' || stats.login.length === 0) return null;
   if (!isFiniteNonNegative(stats.totalContributions)) return null;
   if (!Array.isArray(stats.weeks)) return null;

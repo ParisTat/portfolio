@@ -21,7 +21,7 @@ export const smoothScrollToElement = (selector: string, offset: number = 0): voi
     if ('scrollBehavior' in document.documentElement.style) {
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     } else {
       // Fallback for older browsers
@@ -59,5 +59,5 @@ export const getNavigationItems = ({ hasActivity }: { hasActivity: boolean }) =>
   { href: '#hero', label: 'Home' },
   { href: '#projects', label: 'Projects' },
   ...(hasActivity ? [{ href: '#activity', label: 'Activity' }] : []),
-  { href: '#contact', label: 'Contact' }
+  { href: '#contact', label: 'Contact' },
 ];

@@ -7,15 +7,16 @@ Security items are judged against the ECC security rules (`../.claude/rules/ecc/
 
 Three branches, each built on the one before it. `feat/github-activity` is the top of the stack, so it contains all three; test on that branch.
 
-| # | Branch | PR base | What it changes |
-|---|--------|---------|-----------------|
-| 1 | `feat/build-tailwind-csp-seo` | `main` | Build-time Tailwind v4 (no CDN), strict CSP, SEO tags, images to WebP (7.7 MB to ~235 KB) |
-| 2 | `feat/contact-a11y-and-tests` | branch 1 | Accessible contact form, hardened GitHub release fetch, `jsx-a11y`, 88 unit tests, Playwright e2e in CI |
-| 3 | `feat/github-activity` | branch 2 | GitHub Activity section (heatmap + languages) from build-time stats, weekly rebuild, SHA-pinned actions |
+| #   | Branch                        | PR base  | What it changes                                                                                         |
+| --- | ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 1   | `feat/build-tailwind-csp-seo` | `main`   | Build-time Tailwind v4 (no CDN), strict CSP, SEO tags, images to WebP (7.7 MB to ~235 KB)               |
+| 2   | `feat/contact-a11y-and-tests` | branch 1 | Accessible contact form, hardened GitHub release fetch, `jsx-a11y`, 88 unit tests, Playwright e2e in CI |
+| 3   | `feat/github-activity`        | branch 2 | GitHub Activity section (heatmap + languages) from build-time stats, weekly rebuild, SHA-pinned actions |
 
 ### What was done (details)
 
 **Branch 1: `feat/build-tailwind-csp-seo`**
+
 - Tailwind v4 is compiled at build time via `@tailwindcss/vite` (`index.css` holds the theme). The `cdn.tailwindcss.com` script and its "should not be used in production" console warning are gone.
 - The CSP `<meta>` is injected at build time only (`buildContentSecurityPolicy` in `vite.config.ts`), so `npm run dev` has no CSP.
   - `default-src 'self'`
@@ -36,6 +37,7 @@ Three branches, each built on the one before it. `feat/github-activity` is the t
   - Blur sizes (`blur-sm`, `backdrop-blur-xs`).
 
 **Branch 2: `feat/contact-a11y-and-tests`**
+
 - Contact form:
   - labels linked to inputs, error messages under fields, a live status message
   - one hidden honeypot field
@@ -47,6 +49,7 @@ Three branches, each built on the one before it. `feat/github-activity` is the t
 - Playwright smoke tests (`e2e/`), also run by `deploy.yml` before deploying.
 
 **Branch 3: `feat/github-activity`**
+
 - `scripts/fetch-github-stats.mjs` runs in CI before the build. It queries GitHub GraphQL and writes `public/github-stats.json` (gitignored). With no token, or on any error, it exits 0 and writes nothing.
 - Activity section (`components/github-activity/`):
   - a contribution heatmap (53 weeks × 7 days) and a top-languages bar
@@ -80,6 +83,7 @@ npm run build; npm run preview       # http://localhost:4173/portfolio/
 ```
 
 That's all you need to test. Optional, to run the automated checks yourself (CI runs them anyway before each deploy):
+
 ```powershell
 npx playwright install chromium      # once per machine; downloads the browser the e2e tests drive
 npm run lint; npm run typecheck; npm test; npm run test:e2e
@@ -88,53 +92,64 @@ npm run lint; npm run typecheck; npm test; npm run test:e2e
 Test on **`npm run preview`**, not `npm run dev`: only the production build has the CSP. The contact form uses the real key from `.env.local`, so a successful send delivers a real email to you.
 
 Optional, to see the Activity section locally: create a fine-grained GitHub token (public repositories, read-only). Then:
+
 ```powershell
 $env:GITHUB_TOKEN = "<token>"; npm run fetch:stats; Remove-Item Env:GITHUB_TOKEN
 npm run build; npm run preview
 ```
+
 Without it, the Activity section and its nav link are hidden locally. That's expected, and it will appear after the first deploy.
 
 ### Manual checklist (preview build, desktop Chrome + DevTools open) — passed 2026-10-03
 
 Page load and security
+
 - [x] Console: no errors and no Tailwind CDN warning. Network tab: no request to `cdn.tailwindcss.com`.
 - [x] Elements → `<head>` has `<meta http-equiv="Content-Security-Policy" ...>`. Console shows no "Refused to load/apply" messages.
 - [x] Tab title reads "Paris Tataridis — Software Developer".
 
 Header and navigation
+
 - [x] The header sits over the hero at the very top. Hero text starts about 130px from the top, as on the live site.
 - [x] Scroll down: the header hides. Scroll up a bit: it comes back with a dark blurred background and stays pinned.
 - [x] Desktop nav shows Home · Projects · Activity · Contact. Each scrolls smoothly to its section (Activity shows only when valid stats have loaded).
 
 Hero
+
 - [x] "Building Digital" and the typing word sit close together, as on the live site. The blinking cursor works and the hexagon photo has its glow.
 - [x] **Download CV** saves `Paris_Rafail_Tataridis_CV.pdf`, and the file opens in Acrobat.
 - [x] "View My Work" scrolls to Projects; "Get In Touch" scrolls to Contact.
 
 Projects
+
 - [x] Both cards show sharp images (WebP), titles, tags, and "Live Website" / "Source Code" links. The links open in a new tab.
 
 Activity (only with stats, locally or after deploy)
+
 - [x] The heading shows "N contributions in the last year". The heatmap is 53 columns × 7 rows, in darker to brighter blue/teal.
 - [x] Hovering a cell shows "X contributions on YYYY-MM-DD".
 - [x] The language bar has colored segments and a legend with percentages that add up to about 100%.
 
 Contact form
+
 - [x] Click **Send Message** with empty fields. Expect "Please enter your name.", "Please enter your email address." and "Message must be at least 10 characters." under the fields, and nothing sent.
 - [x] Email `abc`: expect "Please enter a valid email address."
 - [x] Valid data, then send. The button shows "Sending...", then "Thanks! Your message has been sent." appears and the fields clear. The email arrives in your inbox, tagged "Website Contact Request".
 - [x] "email me directly" opens your mail app with subject "Website Contact Request". Your address is not visible anywhere in the page text.
 
 Keyboard and accessibility
+
 - [x] Press Tab from the top of the page. Every link, button and field shows a visible focus ring, in a sensible order. The heatmap can be focused and scrolled with the arrow keys on a narrow screen.
 - [x] Clicking a field's label focuses that field.
 - [x] Scroll down past the hero: a round arrow button fades in at the bottom right. Clicking it scrolls smoothly to the top and it fades out. It's skipped by Tab while hidden.
 
 Mobile (DevTools device toolbar, 375 × 800)
+
 - [x] No sideways page scroll. The hero stacks (text, then photo). The heatmap scrolls sideways inside its card only.
 - [x] Burger menu: opens from the right with Home / Projects / Activity / Contact. A link closes the menu and scrolls. **The X**, Esc, or a tap outside closes it. (Re-tested after the T5 fix.)
 
 Optional
+
 - [ ] Lighthouse (DevTools → Lighthouse, mobile): Performance should be higher than on the live site thanks to the images; SEO and Accessibility 90+.
 
 ### Known issues
@@ -161,6 +176,7 @@ Manual QA passed on 2026-10-03. Everything is committed: the QA fixes, this file
    - Every merge deploys.
 
 ### After each merge (production, https://paristat.github.io/portfolio/)
+
 - [ ] The Actions run is green (lint, test, e2e, fetch stats, build, deploy).
 - [ ] Hard refresh (Ctrl+F5): no console errors, the header sticks, the CV downloads.
 - [ ] After PR 3: the Activity section appears. If it doesn't, add a `STATS_TOKEN` repo secret (fine-grained PAT, read-only) and re-run the workflow.
@@ -169,6 +185,7 @@ Manual QA passed on 2026-10-03. Everything is committed: the QA fixes, this file
 ## Done (PR #1 `fix/security-hardening`, merged 2026-09-27)
 
 Security
+
 - [x] Removed `GEMINI_API_KEY` injection from `vite.config.ts`. It was dead code, but any key set in `.env.local` would have shipped in the public bundle.
 - [x] Removed the leftover AI Studio import map (`aistudiocdn.com`) from `index.html`. React is bundled by Vite.
 - [x] `.gitignore` ignores `.env` and `.env.*` explicitly.
@@ -176,6 +193,7 @@ Security
 - [x] `npm audit fix`: 3 high `rollup` advisories fixed. Now 0 vulnerabilities.
 
 Quality gaps from `/ecc:agent-sort`
+
 - [x] ESLint 9 flat config (`typescript-eslint`, `react-hooks`, `react-refresh`, `no-console`). 15 findings fixed, lint is clean.
 - [x] Vitest + Testing Library + jsdom. Scripts: `test`, `test:watch`, `coverage`, `lint`, `typecheck`.
 - [x] `build` now runs `tsc --noEmit` first.
@@ -183,10 +201,12 @@ Quality gaps from `/ecc:agent-sort`
 - [x] **Bug fixed (test-first):** the `useCV` fallback read stale state and never fired.
 
 On `fix/cv-download`
+
 - [x] **CV download was broken in production**: the PDF wasn't in the build (it lived outside `public/`) and the URL ignored the `/portfolio/` base, so the button saved GitHub's 404 page as a `.pdf`. Now `assets/documents/cv.pdf` is imported via Vite (`?url`), saved as `Paris_Rafail_Tataridis_CV.pdf`. The runtime HEAD probing, `cvDetector.ts`, `useCV` and the `update-cv` script are gone. Covered by `components/Hero.test.tsx`.
 - [x] Removed the dead `<link href="/index.css">` (404 in production).
 
 Stacked PRs (2026-09-28), merged in order
+
 1. `feat/build-tailwind-csp-seo`
    - [x] Build-time Tailwind v4 (`@tailwindcss/vite`) replaces the runtime CDN script.
    - [x] Strict CSP `<meta>` injected at build: no `'unsafe-inline'`, and only the Google Fonts, Web3Forms and GitHub API origins.
@@ -206,35 +226,35 @@ Stacked PRs (2026-09-28), merged in order
 
 ## Security
 
-| Pri | Item | Why |
-|-----|------|-----|
-| P0 | Turn on GitHub **secret scanning + push protection** (repo Settings → Code security) | Blocks accidental key pushes at the source |
-| P1 | Web3Forms dashboard: lock the access key to `paristat.github.io`; add hCaptcha if spam appears | The key is public by design; a domain lock stops reuse elsewhere |
-| P1 | After the first deploy: if the Activity section is missing, the built-in token can't read contributions. Add a `STATS_TOKEN` secret (fine-grained PAT, read-only) | The fetch fails soft, so the deploy stays green either way |
+| Pri | Item                                                                                                                                                              | Why                                                              |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| P0  | Turn on GitHub **secret scanning + push protection** (repo Settings → Code security)                                                                              | Blocks accidental key pushes at the source                       |
+| P1  | Web3Forms dashboard: lock the access key to `paristat.github.io`; add hCaptcha if spam appears                                                                    | The key is public by design; a domain lock stops reuse elsewhere |
+| P1  | After the first deploy: if the Activity section is missing, the built-in token can't read contributions. Add a `STATS_TOKEN` secret (fine-grained PAT, read-only) | The fetch fails soft, so the deploy stays green either way       |
 
 ## CI
 
-| Pri | Item | Notes |
-|-----|------|-------|
-| P1 | `ci.yml` on `pull_request` (lint, typecheck, test, build) | Today the checks only run on push to `main`, after merge |
-| P1 | Dependabot: group minor/patch updates; `react` + `react-dom` together; ignore `@types/node` majors; group Actions updates. Then `@dependabot recreate` on PRs #2–#10 | Several open PRs are unsafe alone (react-dom without react, `@eslint/js` 10 vs eslint 9, vite 8) |
-| P2 | ESLint: lint `scripts/**/*.mjs` (change the glob to `scripts/**/*.{js,mjs}`) | Today the `.mjs` scripts get no rules. They pass cleanly once the glob is widened. The config-protection hook blocks agents from editing `eslint.config.js`, so this is a manual one-line change |
+| Pri | Item                                                                                                                                                                 | Notes                                                                                                                                                                                            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| P1  | `ci.yml` on `pull_request` (lint, typecheck, test, build)                                                                                                            | Today the checks only run on push to `main`, after merge                                                                                                                                         |
+| P1  | Dependabot: group minor/patch updates; `react` + `react-dom` together; ignore `@types/node` majors; group Actions updates. Then `@dependabot recreate` on PRs #2–#10 | Several open PRs are unsafe alone (react-dom without react, `@eslint/js` 10 vs eslint 9, vite 8)                                                                                                 |
+| P2  | ESLint: lint `scripts/**/*.mjs` (change the glob to `scripts/**/*.{js,mjs}`)                                                                                         | Today the `.mjs` scripts get no rules. They pass cleanly once the glob is widened. The config-protection hook blocks agents from editing `eslint.config.js`, so this is a manual one-line change |
 
 ## Features
 
-| Pri | Item | Notes |
-|-----|------|-------|
-| P1 | **"Building with AI": Claude Code daily-usage graph** | Render a sanitized `claude-usage.json` (daily tokens, sessions, model mix, **no prompts, paths or code**) exported by the planned AI-usage tracker (see `../ai-usage-tracker/IDEA.md`) |
-| P2 | Project case-study pages (problem → approach → result) | Stronger than cards alone |
-| P2 | EN / GR toggle | Copy the `LanguageContext` pattern from `wedding-site` (never import across repos) |
+| Pri | Item                                                   | Notes                                                                                                                                                                                  |
+| --- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P1  | **"Building with AI": Claude Code daily-usage graph**  | Render a sanitized `claude-usage.json` (daily tokens, sessions, model mix, **no prompts, paths or code**) exported by the planned AI-usage tracker (see `../ai-usage-tracker/IDEA.md`) |
+| P2  | Project case-study pages (problem → approach → result) | Stronger than cards alone                                                                                                                                                              |
+| P2  | EN / GR toggle                                         | Copy the `LanguageContext` pattern from `wedding-site` (never import across repos)                                                                                                     |
 
 ## Quality, performance, SEO, a11y
 
-| Pri | Item | Notes |
-|-----|------|-------|
-| P1 | Content fixes: the wedding-site card says Next.js (it's Vite); typos "encorporates", "Hirring"; README is still the template; remove the leftover `metadata.json` | User's copy |
-| P2 | a11y audit in a real browser (axe/Lighthouse): contrast, focus order | Lint catches markup issues only |
-| P2 | Prettier + a format check in CI | ESLint is in; formatting isn't enforced yet |
+| Pri | Item                                                                                                                                                              | Notes                                       |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| P1  | Content fixes: the wedding-site card says Next.js (it's Vite); typos "encorporates", "Hirring"; README is still the template; remove the leftover `metadata.json` | User's copy                                 |
+| P2  | a11y audit in a real browser (axe/Lighthouse): contrast, focus order                                                                                              | Lint catches markup issues only             |
+| P2  | Prettier + a format check in CI                                                                                                                                   | ESLint is in; formatting isn't enforced yet |
 
 ## Bugs
 
@@ -242,20 +262,20 @@ Owning branch: 1 = `feat/build-tailwind-csp-seo`, 2 = `feat/contact-a11y-and-tes
 
 ### Known
 
-| # | Bug | Impact | Proposed fix | Branch | Status |
-|---|-----|--------|--------------|--------|--------|
-| K1 | If `github-stats.json` is missing, the Activity section hides but the **Activity nav link stays** and does nothing when clicked. This happens locally without a token, and in production if the CI fetch fails | Dead nav link (desktop and mobile). On GitHub Pages the missing file also logs a 404 in the console | Hide the nav item when there are no stats, or always render a small "Activity unavailable" section | 3 | Fixed: the Activity nav link (desktop and mobile) shows only once valid stats have loaded; `App` loads them once for the section and the nav. The 404 console log on Pages remains |
-| K2 | `eslint.config.js` only lints `scripts/**/*.js`, so `scripts/*.mjs` get no lint rules | Lint gap only; the scripts pass once included | Change the glob to `scripts/**/*.{js,mjs}` by hand (the ECC config-protection hook blocks agents from editing it) | 3 | Open |
-| K3 | After a failed submit, focus stays on the Send button instead of moving to the first field with an error | Minor a11y: screen-reader users hear each error only when they reach that field | Focus the first invalid field on submit | 2 | Fixed: a failed submit focuses the first invalid field in DOM order (name, email, message), after the error state is flushed so `aria-invalid` / `aria-describedby` are already set when it takes focus. Covered in `ContactSection.test.tsx` |
+| #   | Bug                                                                                                                                                                                                            | Impact                                                                                              | Proposed fix                                                                                                      | Branch | Status                                                                                                                                                                                                                                        |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K1  | If `github-stats.json` is missing, the Activity section hides but the **Activity nav link stays** and does nothing when clicked. This happens locally without a token, and in production if the CI fetch fails | Dead nav link (desktop and mobile). On GitHub Pages the missing file also logs a 404 in the console | Hide the nav item when there are no stats, or always render a small "Activity unavailable" section                | 3      | Fixed: the Activity nav link (desktop and mobile) shows only once valid stats have loaded; `App` loads them once for the section and the nav. The 404 console log on Pages remains                                                            |
+| K2  | `eslint.config.js` only lints `scripts/**/*.js`, so `scripts/*.mjs` get no lint rules                                                                                                                          | Lint gap only; the scripts pass once included                                                       | Change the glob to `scripts/**/*.{js,mjs}` by hand (the ECC config-protection hook blocks agents from editing it) | 3      | Open                                                                                                                                                                                                                                          |
+| K3  | After a failed submit, focus stays on the Send button instead of moving to the first field with an error                                                                                                       | Minor a11y: screen-reader users hear each error only when they reach that field                     | Focus the first invalid field on submit                                                                           | 2      | Fixed: a failed submit focuses the first invalid field in DOM order (name, email, message), after the error state is flushed so `aria-invalid` / `aria-describedby` are already set when it takes focus. Covered in `ContactSection.test.tsx` |
 
 ### From testing
 
 Add a row for anything the manual checklist turns up: what you did, what you expected, what happened, and the browser/viewport.
 
-| # | Steps | Expected | Actual | Browser / viewport | Branch | Status |
-|---|-------|----------|--------|--------------------|--------|--------|
-| T1 | Open the hero at phone width | Buttons readable | The three hero buttons squeeze into one row and wrap to 2–3 lines each | Chrome, 375 px | 3 | Fixed: stacked full width below `sm`, one row above |
-| T2 | Load the preview build with the console open | No errors | CSP blocks the web manifest: Vite inlined the 263-byte file as a `data:` URL, and its icon paths ignored the `/portfolio/` base | Chrome, desktop | 3 | Fixed: manifest + Android icons moved to `public/`, relative icon paths, name and theme colour filled in |
-| T3 | View the Activity section on desktop | Heatmap fills the card | Fixed 11 px cells fill only about half the card; on mobile the grid opened on the oldest weeks | Chrome, 2560 px and 375 px | 3 | Fixed: square cells stretch to fill (10 px minimum, then scroll); opens scrolled to the latest weeks |
-| T5 | Phone width: open the burger menu, tap the X | Menu closes | Menu stays open. A document-level click-outside listener closed it on mousedown, then the X's click toggled it open again. On `main` (Tailwind v3) `z-60` wasn't a real class, so the X sat under the backdrop and the tap closed the menu through the backdrop; v4 made `z-60` valid and exposed the bug | Chrome, 375 px | 3 | Fixed: listener removed, and the backdrop now really handles taps outside. It was `inset-0`, but the header's translate/backdrop-blur made it cover only the header strip, so it's now `w-screen h-screen`. Panel given `z-50` above the backdrop; mobile/desktop navs labelled. Unit test with real pointer events and a Playwright test that taps the X and a panel link |
-| T4 | `Should not init.` / `Should not init page.` in the console | — | Comes from a browser extension, not the site (the text isn't in the repo or the build) | Brave | — | Not a bug |
+| #   | Steps                                                       | Expected               | Actual                                                                                                                                                                                                                                                                                                    | Browser / viewport         | Branch | Status                                                                                                                                                                                                                                                                                                                                                                     |
+| --- | ----------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T1  | Open the hero at phone width                                | Buttons readable       | The three hero buttons squeeze into one row and wrap to 2–3 lines each                                                                                                                                                                                                                                    | Chrome, 375 px             | 3      | Fixed: stacked full width below `sm`, one row above                                                                                                                                                                                                                                                                                                                        |
+| T2  | Load the preview build with the console open                | No errors              | CSP blocks the web manifest: Vite inlined the 263-byte file as a `data:` URL, and its icon paths ignored the `/portfolio/` base                                                                                                                                                                           | Chrome, desktop            | 3      | Fixed: manifest + Android icons moved to `public/`, relative icon paths, name and theme colour filled in                                                                                                                                                                                                                                                                   |
+| T3  | View the Activity section on desktop                        | Heatmap fills the card | Fixed 11 px cells fill only about half the card; on mobile the grid opened on the oldest weeks                                                                                                                                                                                                            | Chrome, 2560 px and 375 px | 3      | Fixed: square cells stretch to fill (10 px minimum, then scroll); opens scrolled to the latest weeks                                                                                                                                                                                                                                                                       |
+| T5  | Phone width: open the burger menu, tap the X                | Menu closes            | Menu stays open. A document-level click-outside listener closed it on mousedown, then the X's click toggled it open again. On `main` (Tailwind v3) `z-60` wasn't a real class, so the X sat under the backdrop and the tap closed the menu through the backdrop; v4 made `z-60` valid and exposed the bug | Chrome, 375 px             | 3      | Fixed: listener removed, and the backdrop now really handles taps outside. It was `inset-0`, but the header's translate/backdrop-blur made it cover only the header strip, so it's now `w-screen h-screen`. Panel given `z-50` above the backdrop; mobile/desktop navs labelled. Unit test with real pointer events and a Playwright test that taps the X and a panel link |
+| T4  | `Should not init.` / `Should not init page.` in the console | —                      | Comes from a browser extension, not the site (the text isn't in the repo or the build)                                                                                                                                                                                                                    | Brave                      | —      | Not a bug                                                                                                                                                                                                                                                                                                                                                                  |

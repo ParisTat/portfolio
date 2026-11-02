@@ -51,17 +51,20 @@ Portfolio/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/portfolio.git
    cd portfolio
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -109,6 +112,7 @@ The project uses Tailwind CSS for styling. You can customize the design by modif
 ## 📱 Responsive Design
 
 The portfolio is fully responsive and optimized for:
+
 - Mobile devices (320px+)
 - Tablets (768px+)
 - Desktop (1024px+)

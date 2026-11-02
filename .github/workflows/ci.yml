@@ -4,7 +4,7 @@ name: CI
 # No secrets: the e2e tests use a dummy Web3Forms key (playwright.config.ts).
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read

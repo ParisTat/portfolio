@@ -103,7 +103,8 @@ export function aggregateLanguages(languageEdges, topCount = DEFAULT_TOP_LANGUAG
   const rest = sorted.slice(topCount);
 
   const toPercent = (size) =>
-    Math.round((size / totalSize) * 100 * PERCENT_PRECISION_MULTIPLIER) / PERCENT_PRECISION_MULTIPLIER;
+    Math.round((size / totalSize) * 100 * PERCENT_PRECISION_MULTIPLIER) /
+    PERCENT_PRECISION_MULTIPLIER;
 
   /** @type {LanguageStat[]} */
   const result = top.map(([name, { size, color }]) => ({

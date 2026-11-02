@@ -305,7 +305,11 @@ const ContactSection: React.FC = () => {
 
           <p className="text-xs text-slate-500">
             Tip: If the form doesn’t work, you can{' '}
-            <button type="button" className="text-sky-400 hover:underline cursor-pointer" onClick={handleMailtoClick}>
+            <button
+              type="button"
+              className="text-sky-400 hover:underline cursor-pointer"
+              onClick={handleMailtoClick}
+            >
               email me directly
             </button>
             .

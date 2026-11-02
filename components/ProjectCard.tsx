@@ -21,9 +21,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     if (repoRef) {
       // If we have release data, find the APK file
       if (release && release.assets) {
-        const apkAsset = release.assets.find(asset =>
-          asset.name.toLowerCase().includes('.apk') ||
-          asset.name.toLowerCase().includes('app-debug')
+        const apkAsset = release.assets.find(
+          (asset) =>
+            asset.name.toLowerCase().includes('.apk') ||
+            asset.name.toLowerCase().includes('app-debug'),
         );
         if (apkAsset) {
           return apkAsset.browser_download_url;
@@ -56,17 +57,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         <p className="text-slate-400 mb-4">{description}</p>
         <div className="flex flex-wrap gap-2 mb-6">
           {tags.map((tag) => (
-            <span key={tag} className="bg-sky-900/50 text-sky-300 text-xs font-semibold px-3 py-1 rounded-full font-mono">
+            <span
+              key={tag}
+              className="bg-sky-900/50 text-sky-300 text-xs font-semibold px-3 py-1 rounded-full font-mono"
+            >
               {tag}
             </span>
           ))}
         </div>
         <div className="flex items-center space-x-4">
           {liveUrl && (
-            <a 
-              href={liveUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-white font-semibold hover:text-sky-400 transition-colors"
             >
               <ExternalLinkIcon />
@@ -74,9 +78,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             </a>
           )}
           {sourceUrl && (
-            <a 
-              href={sourceUrl} 
-              target="_blank" 
+            <a
+              href={sourceUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-white font-semibold hover:text-sky-400 transition-colors"
             >
@@ -85,22 +89,22 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             </a>
           )}
           {apkUrl && (
-            <a 
-              href={getApkDownloadUrl()} 
+            <a
+              href={getApkDownloadUrl()}
               download
               className={`inline-flex items-center gap-2 text-white font-semibold hover:text-sky-400 transition-colors ${
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               title={error ? `Error loading APK: ${error}` : ''}
             >
-              <svg 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
                 className={loading ? 'animate-spin' : ''}
               >

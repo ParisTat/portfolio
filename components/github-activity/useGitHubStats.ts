@@ -3,9 +3,7 @@ import { parseGitHubStats } from './parseGitHubStats';
 import type { GitHubStats } from './types';
 
 export type GitHubStatsState =
-  | { status: 'loading' }
-  | { status: 'success'; data: GitHubStats }
-  | { status: 'error' };
+  { status: 'loading' } | { status: 'success'; data: GitHubStats } | { status: 'error' };
 
 /**
  * Fetches the build-time github-stats.json snapshot and validates it before exposing it.

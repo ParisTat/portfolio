@@ -70,9 +70,12 @@ export const useGitHubRelease = (repoUrl: string) => {
       const { owner, repo } = repoRef;
       setLoading(true);
       try {
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!response.ok) {
           throw new Error('Failed to fetch release data');
