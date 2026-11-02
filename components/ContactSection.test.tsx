@@ -142,22 +142,25 @@ describe('ContactSection', () => {
     it.each([
       ['malformed', 'not-a-uuid'],
       ['missing', ''],
-    ])('leaves focus on the Send button when the fields are valid but the access key is %s', async (_label, accessKey) => {
-      const user = userEvent.setup();
-      const fetchSpy = vi.fn();
-      vi.stubGlobal('fetch', fetchSpy);
+    ])(
+      'leaves focus on the Send button when the fields are valid but the access key is %s',
+      async (_label, accessKey) => {
+        const user = userEvent.setup();
+        const fetchSpy = vi.fn();
+        vi.stubGlobal('fetch', fetchSpy);
 
-      const ContactSection = await loadContactSection(accessKey);
-      render(<ContactSection />);
+        const ContactSection = await loadContactSection(accessKey);
+        render(<ContactSection />);
 
-      await fillValidForm(user);
-      const sendButton = screen.getByRole('button', { name: /send message/i });
-      await user.click(sendButton);
+        await fillValidForm(user);
+        const sendButton = screen.getByRole('button', { name: /send message/i });
+        await user.click(sendButton);
 
-      expect(await screen.findByRole('alert')).toHaveTextContent(/something went wrong/i);
-      expect(sendButton).toHaveFocus();
-      expect(fetchSpy).not.toHaveBeenCalled();
-    });
+        expect(await screen.findByRole('alert')).toHaveTextContent(/something went wrong/i);
+        expect(sendButton).toHaveFocus();
+        expect(fetchSpy).not.toHaveBeenCalled();
+      },
+    );
 
     it('moves focus to the email field when only the name is valid and the email is malformed', async () => {
       const user = userEvent.setup();
@@ -172,7 +175,9 @@ describe('ContactSection', () => {
 
       expect(await screen.findByText(/please enter a valid email address/i)).toBeInTheDocument();
       expect(screen.getByLabelText('Email')).toHaveFocus();
-      expect(screen.getByLabelText('Email')).toHaveAccessibleDescription('Please enter a valid email address.');
+      expect(screen.getByLabelText('Email')).toHaveAccessibleDescription(
+        'Please enter a valid email address.',
+      );
     });
 
     it('moves focus to the message field when only the message is too short', async () => {
@@ -189,7 +194,9 @@ describe('ContactSection', () => {
 
       expect(await screen.findByText(/message must be at least/i)).toBeInTheDocument();
       expect(screen.getByLabelText('Message')).toHaveFocus();
-      expect(screen.getByLabelText('Message')).toHaveAccessibleDescription('Message must be at least 10 characters.');
+      expect(screen.getByLabelText('Message')).toHaveAccessibleDescription(
+        'Message must be at least 10 characters.',
+      );
     });
 
     it('marks the field invalid and links its error before it receives focus', async () => {
@@ -202,13 +209,19 @@ describe('ContactSection', () => {
       // Screen readers read aria-invalid / aria-describedby at the moment of
       // focus, so the error wiring must already be in the DOM by then.
       const emailInput = screen.getByLabelText('Email');
-      const seenOnFocus: Array<{ invalid: string | null; describedBy: string | null; errorText: string | null }> = [];
+      const seenOnFocus: Array<{
+        invalid: string | null;
+        describedBy: string | null;
+        errorText: string | null;
+      }> = [];
       emailInput.addEventListener('focus', () => {
         const describedBy = emailInput.getAttribute('aria-describedby');
         seenOnFocus.push({
           invalid: emailInput.getAttribute('aria-invalid'),
           describedBy,
-          errorText: describedBy ? (document.getElementById(describedBy)?.textContent ?? null) : null,
+          errorText: describedBy
+            ? (document.getElementById(describedBy)?.textContent ?? null)
+            : null,
         });
       });
 
@@ -219,7 +232,11 @@ describe('ContactSection', () => {
 
       await screen.findByText(/please enter a valid email address/i);
       expect(seenOnFocus).toEqual([
-        { invalid: 'true', describedBy: expect.any(String), errorText: 'Please enter a valid email address.' },
+        {
+          invalid: 'true',
+          describedBy: expect.any(String),
+          errorText: 'Please enter a valid email address.',
+        },
       ]);
     });
 
@@ -227,7 +244,7 @@ describe('ContactSection', () => {
       const user = userEvent.setup();
       vi.stubGlobal(
         'fetch',
-        vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+        vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true }) }),
       );
 
       const ContactSection = await loadContactSection();
@@ -276,8 +293,11 @@ describe('ContactSection', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({ success: false, message: 'Invalid Web3Forms access key. Check your dashboard.' }),
-      })
+        json: async () => ({
+          success: false,
+          message: 'Invalid Web3Forms access key. Check your dashboard.',
+        }),
+      }),
     );
 
     const ContactSection = await loadContactSection();
@@ -300,7 +320,7 @@ describe('ContactSection', () => {
         json: async () => {
           throw new Error('not json');
         },
-      })
+      }),
     );
 
     const ContactSection = await loadContactSection();
@@ -322,7 +342,7 @@ describe('ContactSection', () => {
         json: async () => {
           throw new SyntaxError('Unexpected token');
         },
-      })
+      }),
     );
 
     const ContactSection = await loadContactSection();
@@ -397,9 +417,15 @@ describe('ContactSection', () => {
 
     expect(window.location.href).toMatch(/^mailto:.+@.+/);
 
-    Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    });
 
-    expect(screen.queryByRole('textbox', { name: /leave this field empty/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: /leave this field empty/i }),
+    ).not.toBeInTheDocument();
     const honeypot = container.querySelector('input[name="botcheck"]');
     expect(honeypot).toHaveAttribute('tabindex', '-1');
     expect(honeypot).toHaveAttribute('autocomplete', 'off');
@@ -424,7 +450,11 @@ describe('ContactSection', () => {
     await user.keyboard('{Enter}');
     expect(window.location.href).toMatch(/^mailto:.+@.+/);
 
-    Object.defineProperty(window, 'location', { configurable: true, writable: true, value: originalLocation });
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      writable: true,
+      value: originalLocation,
+    });
   });
 
   it('sets aria-busy on the form while submitting', async () => {
@@ -436,8 +466,8 @@ describe('ContactSection', () => {
         () =>
           new Promise((resolve) => {
             resolveFetch = resolve;
-          })
-      )
+          }),
+      ),
     );
 
     const ContactSection = await loadContactSection();

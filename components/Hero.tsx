@@ -4,7 +4,7 @@ import portrait from '../assets/images/Ghibli studio style portrait.jpeg';
 import cvUrl from '../assets/documents/cv.pdf?url';
 import { cvConfig } from '../config/cvConfig';
 
-const dynamicWords = ["Experiences", "Solutions", "Web Apps"];
+const dynamicWords = ['Experiences', 'Solutions', 'Web Apps'];
 const ctaLayout = 'text-center whitespace-nowrap';
 
 const Hero: React.FC = () => {
@@ -36,27 +36,43 @@ const Hero: React.FC = () => {
   }, [text, isDeleting, wordIndex]);
 
   return (
-    <section id="hero" className="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center justify-between gap-12">
+    <section
+      id="hero"
+      className="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center justify-between gap-12"
+    >
       <div className="md:w-3/5 text-center md:text-left">
         <h1 className="text-5xl md:text-7xl font-black text-white leading-tight md:leading-none mb-4">
           Building Digital <br />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-teal-400 min-h-[6rem] md:min-h-[7rem] inline-block">
             {text || '\u00A0'}
           </span>
-          <span className="animate-cursor-blink text-sky-400 text-5xl md:text-6xl align-middle">|</span>
+          <span className="animate-cursor-blink text-sky-400 text-5xl md:text-6xl align-middle">
+            |
+          </span>
         </h1>
         <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto md:mx-0">
-          I'm a passionate developer specializing in creating modern, responsive, and user-friendly web applications. Let's turn your ideas into reality.
+          I'm a passionate developer specializing in creating modern, responsive, and user-friendly
+          web applications. Let's turn your ideas into reality.
         </p>
         {/* Phones: full-width stack. From sm up: one row, each label on a single line. */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-xs mx-auto sm:max-w-none sm:mx-0 justify-center md:justify-start">
-          <a href="#projects" className={`${ctaLayout} bg-sky-500 text-white font-bold py-3 px-8 rounded-full hover:bg-sky-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-sky-500/40 shadow-sky-500/20 transform hover:-translate-y-1`}>
+          <a
+            href="#projects"
+            className={`${ctaLayout} bg-sky-500 text-white font-bold py-3 px-8 rounded-full hover:bg-sky-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-sky-500/40 shadow-sky-500/20 transform hover:-translate-y-1`}
+          >
             View My Work
           </a>
-          <a href="#contact" className={`${ctaLayout} bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1`}>
+          <a
+            href="#contact"
+            className={`${ctaLayout} bg-slate-700 text-white font-bold py-3 px-8 rounded-full hover:bg-slate-600 transition-all duration-300 transform hover:-translate-y-1`}
+          >
             Get In Touch
           </a>
-          <a href={cvUrl} download={cvConfig.downloadName} className={`${ctaLayout} ${cvConfig.buttonClass}`}>
+          <a
+            href={cvUrl}
+            download={cvConfig.downloadName}
+            className={`${ctaLayout} ${cvConfig.buttonClass}`}
+          >
             {cvConfig.buttonText}
           </a>
         </div>
@@ -65,16 +81,16 @@ const Hero: React.FC = () => {
         <div className="relative group">
           <div className="absolute -inset-1.5 bg-gradient-to-r from-sky-500 to-teal-400 opacity-75 blur-sm group-hover:opacity-100 transition duration-500 group-hover:duration-200 animate-pulse hexagon"></div>
           <div className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden shadow-2xl shadow-sky-500/20 bg-slate-900 hexagon">
-              <img
-                src={portrait}
-                alt="Developer Portrait"
-                width={1184}
-                height={864}
-                loading="eager"
-                decoding="async"
-                fetchPriority="high"
-                className="w-full h-full object-cover"
-              />
+            <img
+              src={portrait}
+              alt="Developer Portrait"
+              width={1184}
+              height={864}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </div>

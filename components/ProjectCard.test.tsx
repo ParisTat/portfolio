@@ -54,7 +54,7 @@ describe('ProjectCard', () => {
   it('shows a loading state for the APK link while the release is being fetched', () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(() => new Promise(() => {}))
+      vi.fn(() => new Promise(() => {})),
     );
     const project: Project = { ...baseProject, apkUrl: 'https://github.com/example/repo' };
 
@@ -73,11 +73,12 @@ describe('ProjectCard', () => {
           assets: [
             {
               name: 'app-release.apk',
-              browser_download_url: 'https://github.com/example/repo/releases/download/v2.0.0/app-release.apk',
+              browser_download_url:
+                'https://github.com/example/repo/releases/download/v2.0.0/app-release.apk',
             },
           ],
         }),
-      })
+      }),
     );
     const project: Project = { ...baseProject, apkUrl: 'https://github.com/example/repo' };
 
@@ -86,7 +87,7 @@ describe('ProjectCard', () => {
     const link = await screen.findByText(/download apk/i);
     expect(link.closest('a')).toHaveAttribute(
       'href',
-      'https://github.com/example/repo/releases/download/v2.0.0/app-release.apk'
+      'https://github.com/example/repo/releases/download/v2.0.0/app-release.apk',
     );
   });
 
@@ -96,7 +97,7 @@ describe('ProjectCard', () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ tag_name: 'v2.0.0', assets: [] }),
-      })
+      }),
     );
     const project: Project = { ...baseProject, apkUrl: 'https://github.com/example/repo' };
 
@@ -105,7 +106,7 @@ describe('ProjectCard', () => {
     const link = await screen.findByText(/download apk/i);
     expect(link.closest('a')).toHaveAttribute(
       'href',
-      'https://github.com/example/repo/releases/latest/download/app-debug.apk'
+      'https://github.com/example/repo/releases/latest/download/app-debug.apk',
     );
   });
 
@@ -116,6 +117,9 @@ describe('ProjectCard', () => {
     render(<ProjectCard project={project} />);
 
     const link = await screen.findByText(/download apk/i);
-    expect(link.closest('a')).toHaveAttribute('title', expect.stringContaining('Failed to fetch release data'));
+    expect(link.closest('a')).toHaveAttribute(
+      'title',
+      expect.stringContaining('Failed to fetch release data'),
+    );
   });
 });

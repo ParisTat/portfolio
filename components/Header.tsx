@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ hasActivity }) => {
   };
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       } ${isScrolled ? 'bg-slate-900/90 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ hasActivity }) => {
           <ul className="flex space-x-8">
             {navigationItems.map((item) => (
               <li key={item.href}>
-                <a 
+                <a
                   href={item.href}
                   className="text-lg font-medium hover:text-sky-400 transition-colors cursor-pointer"
                   onClick={(e) => {
@@ -67,17 +67,17 @@ const Header: React.FC<HeaderProps> = ({ hasActivity }) => {
           aria-label="Toggle mobile menu"
           aria-expanded={isMobileMenuOpen}
         >
-          <span 
+          <span
             className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
               isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
             }`}
           />
-          <span 
+          <span
             className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
               isMobileMenuOpen ? 'opacity-0' : ''
             }`}
           />
-          <span 
+          <span
             className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
               isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
             }`}

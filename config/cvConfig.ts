@@ -6,5 +6,6 @@ export const cvConfig = {
 
   buttonText: 'Download CV',
 
-  buttonClass: 'bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-500 transition-all duration-300 transform hover:-translate-y-1'
+  buttonClass:
+    'bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-500 transition-all duration-300 transform hover:-translate-y-1',
 };

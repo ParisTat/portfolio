@@ -10,7 +10,7 @@
  */
 export const throttle = <T extends (...args: never[]) => unknown>(
   func: T,
-  limit: number
+  limit: number,
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
 
@@ -31,7 +31,7 @@ export const throttle = <T extends (...args: never[]) => unknown>(
  */
 export const debounce = <T extends (...args: never[]) => unknown>(
   func: T,
-  delay: number
+  delay: number,
 ): ((...args: Parameters<T>) => void) => {
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -58,7 +58,7 @@ export const getCurrentScrollY = (): number => {
  */
 export const isElementInViewport = (element: HTMLElement, offset: number = 0): boolean => {
   if (typeof window === 'undefined') return false;
-  
+
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= -offset &&
@@ -74,7 +74,7 @@ export const isElementInViewport = (element: HTMLElement, offset: number = 0): b
 export enum ScrollDirection {
   UP = 'up',
   DOWN = 'down',
-  NONE = 'none'
+  NONE = 'none',
 }
 
 /**
@@ -85,7 +85,7 @@ export enum ScrollDirection {
  */
 export const getScrollDirection = (
   currentScrollY: number,
-  previousScrollY: number
+  previousScrollY: number,
 ): ScrollDirection => {
   if (currentScrollY > previousScrollY) {
     return ScrollDirection.DOWN;
