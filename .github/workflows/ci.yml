@@ -4,7 +4,7 @@ name: CI
 # No secrets: the e2e tests use a dummy Web3Forms key (playwright.config.ts).
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -24,6 +24,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test

@@ -72,8 +72,14 @@ describe('App activity section and nav link', () => {
 
     expect(await screen.findByRole('heading', { name: /GitHub Activity/i })).toBeInTheDocument();
     const { desktop, mobile } = getNavs();
-    expect(within(desktop).getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '#activity');
-    expect(within(mobile).getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '#activity');
+    expect(within(desktop).getByRole('link', { name: 'Activity' })).toHaveAttribute(
+      'href',
+      '#activity',
+    );
+    expect(within(mobile).getByRole('link', { name: 'Activity' })).toHaveAttribute(
+      'href',
+      '#activity',
+    );
   });
 
   it('hides the section and the nav link in both navs when the stats file is missing', async () => {

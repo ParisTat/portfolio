@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
   schedule:
     # Refreshes the GitHub activity graph (public/github-stats.json) weekly.

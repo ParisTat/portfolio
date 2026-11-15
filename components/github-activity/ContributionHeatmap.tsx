@@ -46,7 +46,9 @@ const ContributionHeatmap: React.FC<ContributionHeatmapProps> = ({ weeks, totalC
   }, [weeks]);
 
   // Columns stretch to fill the card (w-max + min-w-full); MIN_CELL_PX is the floor where scrolling starts.
-  const gridStyle = { gridTemplateColumns: `repeat(${weeks.length}, minmax(${MIN_CELL_PX}px, 1fr))` };
+  const gridStyle = {
+    gridTemplateColumns: `repeat(${weeks.length}, minmax(${MIN_CELL_PX}px, 1fr))`,
+  };
 
   // The scroll container is focusable so keyboard users can scroll the grid on narrow screens (WCAG 2.1.1).
   return (

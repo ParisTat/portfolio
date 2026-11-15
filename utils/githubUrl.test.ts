@@ -43,7 +43,9 @@ describe('parseGithubRepoUrl', () => {
 
 describe('isGithubHttpsUrl', () => {
   it('accepts an https github.com URL', () => {
-    expect(isGithubHttpsUrl('https://github.com/octocat/hello-world/releases/download/v1/app.apk')).toBe(true);
+    expect(
+      isGithubHttpsUrl('https://github.com/octocat/hello-world/releases/download/v1/app.apk'),
+    ).toBe(true);
   });
 
   it('rejects http (non-https)', () => {

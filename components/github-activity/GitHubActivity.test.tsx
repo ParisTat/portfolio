@@ -8,7 +8,9 @@ describe('GitHubActivity', () => {
     render(<GitHubActivity state={{ status: 'success', data: githubStatsFixture }} />);
 
     expect(screen.getByRole('heading', { name: /GitHub Activity/i })).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /15 contributions in the last year/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /15 contributions in the last year/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
     expect(screen.getByText('65%')).toBeInTheDocument();
   });

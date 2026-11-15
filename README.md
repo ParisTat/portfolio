@@ -23,17 +23,17 @@ The contact form needs `VITE_WEB3FORMS_ACCESS_KEY` (a public key, locked to the 
 
 ## Scripts
 
-| Command | What it does |
-|---------|--------------|
-| `npm run dev` | Start the dev server |
-| `npm run build` | Typecheck, then build to `dist/` |
-| `npm run preview` | Serve the production build |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm test` | Unit tests (Vitest) |
-| `npm run coverage` | Unit tests with coverage thresholds |
-| `npm run test:e2e` | Playwright smoke tests (first run: `npx playwright install chromium`) |
-| `npm run fetch:stats` | Fetch GitHub stats (needs `GITHUB_TOKEN`) |
+| Command               | What it does                                                          |
+| --------------------- | --------------------------------------------------------------------- |
+| `npm run dev`         | Start the dev server                                                  |
+| `npm run build`       | Typecheck, then build to `dist/`                                      |
+| `npm run preview`     | Serve the production build                                            |
+| `npm run lint`        | ESLint                                                                |
+| `npm run typecheck`   | `tsc --noEmit`                                                        |
+| `npm test`            | Unit tests (Vitest)                                                   |
+| `npm run coverage`    | Unit tests with coverage thresholds                                   |
+| `npm run test:e2e`    | Playwright smoke tests (first run: `npx playwright install chromium`) |
+| `npm run fetch:stats` | Fetch GitHub stats (needs `GITHUB_TOKEN`)                             |
 
 ## Structure
 

@@ -42,7 +42,9 @@ test.describe('Portfolio smoke test', () => {
 
   // Real hit-testing, which jsdom can't do: Playwright refuses to click an element another layer
   // covers. Guards the X button (above the backdrop) and the panel links (above the backdrop too).
-  test('the mobile menu closes with the X and its links sit above the backdrop', async ({ page }) => {
+  test('the mobile menu closes with the X and its links sit above the backdrop', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 375, height: 800 });
     await page.goto('/');
     const toggle = page.getByRole('button', { name: /toggle mobile menu/i });
@@ -59,7 +61,10 @@ test.describe('Portfolio smoke test', () => {
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 
     await toggle.click();
-    await page.getByRole('navigation', { name: 'Mobile' }).getByRole('link', { name: 'Contact' }).click();
+    await page
+      .getByRole('navigation', { name: 'Mobile' })
+      .getByRole('link', { name: 'Contact' })
+      .click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(page.locator('#contact')).toBeInViewport();
   });
@@ -81,7 +86,9 @@ test.describe('Portfolio smoke test', () => {
     await expect(page.getByLabel('Message')).toBeVisible();
   });
 
-  test('submitting the contact form shows a success message without a real network request', async ({ page }) => {
+  test('submitting the contact form shows a success message without a real network request', async ({
+    page,
+  }) => {
     let requestCount = 0;
     await page.route('https://api.web3forms.com/**', async (route) => {
       requestCount += 1;

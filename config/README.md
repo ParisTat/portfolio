@@ -11,15 +11,16 @@ This folder contains the configuration for your CV download button.
 export const cvConfig = {
   // Change this to your new CV filename
   fileName: 'Your_New_CV_Name.pdf',
-  
+
   // Change this to what users will see when downloading
   displayName: 'Your_New_CV_Name.pdf',
-  
+
   // Optional: Change the button text
   buttonText: 'Download CV',
-  
+
   // Optional: Customize button styling
-  buttonClass: 'bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-500 transition-all duration-300 transform hover:-translate-y-1'
+  buttonClass:
+    'bg-emerald-600 text-white font-bold py-3 px-8 rounded-full hover:bg-emerald-500 transition-all duration-300 transform hover:-translate-y-1',
 };
 ```
 

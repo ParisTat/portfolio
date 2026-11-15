@@ -15,6 +15,17 @@ describe('Footer', () => {
     });
   });
 
+  it('gives each icon-only profile link an accessible name', () => {
+    render(<Footer />);
+
+    expect(
+      screen.getByRole('link', { name: 'GitHub profile (opens in a new tab)' }),
+    ).toHaveAttribute('href', 'https://github.com/ParisTat');
+    expect(
+      screen.getByRole('link', { name: 'LinkedIn profile (opens in a new tab)' }),
+    ).toHaveAttribute('href', expect.stringContaining('linkedin.com/in/'));
+  });
+
   it('shows the current year in the copyright line', () => {
     render(<Footer />);
     const year = new Date().getFullYear().toString();

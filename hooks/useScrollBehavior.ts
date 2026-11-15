@@ -16,10 +16,10 @@ export const useScrollBehavior = (): ScrollBehaviorState => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       // Set scrolled state for transparency
       setIsScrolled(currentScrollY > 10);
-      
+
       // Show/hide header based on scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         // Scrolling down - hide header
@@ -28,13 +28,13 @@ export const useScrollBehavior = (): ScrollBehaviorState => {
         // Scrolling up - show header
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
     // Use passive listeners for better performance
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };

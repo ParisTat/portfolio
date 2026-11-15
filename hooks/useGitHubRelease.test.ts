@@ -12,7 +12,8 @@ function githubResponse(overrides: Partial<{ tag_name: unknown; assets: unknown 
       assets: [
         {
           name: 'app.apk',
-          browser_download_url: 'https://github.com/octocat/hello-world/releases/download/v1.0.0/app.apk',
+          browser_download_url:
+            'https://github.com/octocat/hello-world/releases/download/v1.0.0/app.apk',
         },
       ],
       ...overrides,
@@ -79,8 +80,8 @@ describe('useGitHubRelease', () => {
       vi.fn().mockResolvedValue(
         githubResponse({
           assets: [{ name: 'app.apk', browser_download_url: 'https://evil.example.com/app.apk' }],
-        })
-      )
+        }),
+      ),
     );
 
     const { result } = renderHook(() => useGitHubRelease(VALID_URL));
@@ -100,7 +101,7 @@ describe('useGitHubRelease', () => {
         return new Promise(() => {
           // never resolves; unmount should abort instead of resolving into state
         });
-      })
+      }),
     );
 
     const { unmount } = renderHook(() => useGitHubRelease(VALID_URL));

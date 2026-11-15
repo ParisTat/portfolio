@@ -131,7 +131,11 @@ function isValidPage(data, requireCalendar = true) {
   }
 
   const repositories = user.repositories;
-  if (!repositories || !Array.isArray(repositories.nodes) || typeof repositories.pageInfo !== 'object') {
+  if (
+    !repositories ||
+    !Array.isArray(repositories.nodes) ||
+    typeof repositories.pageInfo !== 'object'
+  ) {
     return false;
   }
 
@@ -164,7 +168,10 @@ async function collectAllLanguageEdges(firstPageData) {
             edge.node &&
             typeof edge.node.name === 'string'
           ) {
-            edges.push({ size: edge.size, node: { name: edge.node.name, color: edge.node.color ?? null } });
+            edges.push({
+              size: edge.size,
+              node: { name: edge.node.name, color: edge.node.color ?? null },
+            });
           }
         }
       }
@@ -193,7 +200,9 @@ async function main() {
   try {
     firstPageData = await queryGraphQl(null);
   } catch (error) {
-    warnAndExit(`GitHub API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    warnAndExit(
+      `GitHub API request failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
     return;
   }
 
@@ -223,7 +232,9 @@ async function main() {
 
   await mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
   await writeFile(OUTPUT_PATH, JSON.stringify(payload), 'utf-8');
-  console.warn(`[fetch-github-stats] Wrote ${OUTPUT_PATH} (${payload.totalContributions} contributions).`);
+  console.warn(
+    `[fetch-github-stats] Wrote ${OUTPUT_PATH} (${payload.totalContributions} contributions).`,
+  );
 }
 
 main().catch((error) => {

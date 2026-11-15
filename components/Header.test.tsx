@@ -28,8 +28,14 @@ describe('Header', () => {
     const desktopNav = screen.getByRole('navigation', { name: 'Main' });
     const mobileNav = screen.getByRole('navigation', { name: 'Mobile' });
 
-    expect(within(desktopNav).getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '#activity');
-    expect(within(mobileNav).getByRole('link', { name: 'Activity' })).toHaveAttribute('href', '#activity');
+    expect(within(desktopNav).getByRole('link', { name: 'Activity' })).toHaveAttribute(
+      'href',
+      '#activity',
+    );
+    expect(within(mobileNav).getByRole('link', { name: 'Activity' })).toHaveAttribute(
+      'href',
+      '#activity',
+    );
   });
 
   it('hides the Activity link from both navs when activity is unavailable', () => {

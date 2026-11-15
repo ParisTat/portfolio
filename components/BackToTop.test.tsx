@@ -52,7 +52,10 @@ describe('BackToTop', () => {
     render(<BackToTop />);
 
     scrollPageTo(1200);
-    expect(screen.getByRole('button', { name: 'Back to top' })).not.toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('button', { name: 'Back to top' })).not.toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
     expect(getButton()).toHaveAttribute('tabindex', '0');
 
     scrollPageTo(100);
