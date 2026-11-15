@@ -22,9 +22,9 @@ const projects: Project[] = [
     id: 2,
     title: 'A wedding website',
     description:
-      'A wedding site that encorporates the invitation confirmation system, as well as all the required information a guest would need to attend the wedding.',
+      'A wedding site that incorporates the invitation confirmation system, as well as all the required information a guest would need to attend the wedding.',
     imageUrl: imgWedding,
-    tags: ['React', 'TypeScript', 'Next.js', 'Firebase', 'Tailwind CSS'],
+    tags: ['React', 'TypeScript', 'Vite', 'Firebase', 'Tailwind CSS'],
     liveUrl: 'https://wedding-site-d3677.web.app/',
     //sourceUrl: '#',
   },
@@ -34,7 +34,7 @@ const projects: Project[] = [
     description:
       'An application that allows for the hiring of employees for the company, as well as the management of the employees.',
     imageUrl: imgTalentpool,
-    tags: ['React', 'TypeScript', 'Next.js', 'Supabase', 'Tailwind CSS'],
+    tags: ['React', 'TypeScript', 'Vite', 'Supabase', 'Tailwind CSS'],
     liveUrl: 'https://talent-pool-hirring-app.vercel.app/',
     sourceUrl: 'https://github.com/ParisTat/TalentPool-HirringApp',
     apkUrl: 'https://github.com/ParisTat/TalentPool-HirringApp',
